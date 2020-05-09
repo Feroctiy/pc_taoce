@@ -1,35 +1,33 @@
  
 <template>
-    <el-dialog :close-on-click-modal="true" :visible.sync="visible" title="新增地址">
-        <div id="main">
-            <el-table v-loading="isLoading" :data="dataList" border="" style="width: 100%;">
-                <el-table-column fixed label="序号" align="center" width="60px">
-                    <template slot-scope="scope">
-                        <span>{{ scope.$index+(queryCondition.page - 1) * queryCondition.size + 1 }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="agentName" header-align="center" align="left" label="服务编号" :show-overflow-tooltip="true" />
-                <el-table-column
-                    prop="agentUserName"
-                    header-align="center"
-                    align="left"
-                    label="服务方案名称"
-                    :show-overflow-tooltip="true"
-                />
-                <el-table-column
-                    prop="agentCode"
-                    header-align="center"
-                    align="center"
-                    label="检测产品名称"
-                />
-                <el-table-column prop="agentExamine"  header-align="center" align="right" label="检测周期（工作日）" sortable />
-                <el-table-column prop="agentPass" header-align="center" align="right" label="服务价格"/>
-                <el-table-column prop="auditFailed" header-align="center" align="right" label="操作"/>
-            </el-table>
+    <el-dialog
+        :close-on-click-modal="true"
+        :visible.sync="visible"
+        title="新增地址"
+        id="addOrUpdateAddr"
+    >
+        <div>
+            <el-form :model="form" :rules="rules">
+                <el-form-item label="收件人" :label-width="formLabelWidth" prop="consignee">
+                    <el-input v-model="form.consignee" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="单位名称" :label-width="formLabelWidth">
+                    <el-input v-model="form.companyName" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="联系方式" :label-width="formLabelWidth" prop="phone">
+                    <el-input v-model="form.phone" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="行政区域" :label-width="formLabelWidth" prop="value">
+                    <el-cascader v-model="form.value" :options="options" @change="handleChange"></el-cascader>
+                </el-form-item>
+                <el-form-item label="详细地址" :label-width="formLabelWidth" prop="address">
+                    <el-input v-model="form.address" autocomplete="off"></el-input>
+                </el-form-item>
+            </el-form>
         </div>
         <span slot="footer" class="dialog-footer">
             <el-button @click="visible = false">取消</el-button>
-            <el-button type="primary" @click="visible = false">确认</el-button>
+            <el-button type="primary" @click="handleAddress">确认</el-button>
         </span>
     </el-dialog>
 </template>
@@ -39,18 +37,87 @@ export default {
   components: {},
   data() {
     return {
+      value: [],
       visible: false,
       isLoading: false,
-      dataList:[]
+      dataList: [],
+      form: {},
+      formLabelWidth: "120px",
+      options: [],
+      rules: {
+        consignee: [
+          { required: true, message: "请输入收件人", trigger: "blur" }
+        ],
+        phone: [{ required: true, message: "请输入联系方式", trigger: "blur" }],
+        value: [{ required: true, message: "请选择行政区域", trigger: "blur" }]
+      }
     };
   },
-  created() {},
+  created() {
+    var _this = this;
+    this.$fetch("/api/tools/oms/getAllAddressList").then(response => {
+      response.data.forEach(function(value, index) {
+        var item = { value: value.dm, label: value.name, children: [] };
+        _this.options.push(item);
+        value.ssqdmEntityList.forEach(function(v, i) {
+          _this.options[index].children.push({
+            value: v.dm,
+            label: v.name,
+            children: []
+          });
+          v.ssqdmEntityList.forEach(function(x, y) {
+            _this.options[index].children[i].children.push({
+              value: x.dm,
+              label: x.name
+            });
+          });
+        });
+      });
+    });
+  },
   methods: {
+    handleChange(value) {
+      console.log(value);
+    },
     init(item) {
       this.visible = true;
       this.$nextTick(() => {});
+    },
+    onSelected(data) {
+      this.form.province = data.province.value;
+      this.form.city = data.city.value;
+      this.form.district = data.area.value;
+    },
+    handleAddress() {
+      // /api/user/addUserConsigneeAddress
+      var _this = this;
+      this.$post("/api/user/addUserConsigneeAddress",  {
+          "address": _this.form.address,
+          "city": _this.form.value[1],
+          "companyName": _this.form.companyName,
+          "consignee": _this.form.consignee,
+          "district": _this.form.value[2],
+          "phone": _this.form.phone,
+          "province": _this.form.value[0],
+          "token":window.localStorage.getItem("paoce_token")
+         
+      }).then(response => {
+        this.visible = false;
+        this.$emit('refreshDataList')
+      });
     }
   }
 };
 </script>
+<style scoped>
+#addOrUpdateAddr .el-input,
+#addOrUpdateAddr .el-select,
+#addOrUpdateAddr .el-cascader {
+  width: 400px;
+}
+#addOrUpdateAddr .distpicker-address-wrapper select {
+  width: 130px !important;
+}
+</style>
+
  

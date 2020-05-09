@@ -1,14 +1,14 @@
 <template>
     <div class="content main_width">
-        <el-row :gutter="10" style="margin-top:10px">
+        <!-- <el-row :gutter="10" style="margin-top:10px">
             <el-col :span="4" v-for="(item, index)  in tableData" :key="index" @click="goDetail()">
                 <div class="grid-content bg-white">
                     <img :src="item.img" alt="">
                     <div class="name">{{item.name}}</div>
                 </div>
             </el-col>
-        </el-row>
-        <div class="block " style="text-align:center;">
+        </el-row> -->
+        <!-- <div class="block " style="text-align:center;">
             <el-pagination
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
@@ -18,18 +18,92 @@
                 layout="total, sizes, prev, pager, next, jumper"
                 :total="400"
             ></el-pagination>
-        </div>
+        </div> -->
+
+        <el-row :gutter="20">
+        <el-col :span="4">
+          <div class="grid-content text-center" style="padding-top:10px;">
+            <img src="@/assets/11.jpg" alt="" style="width:200px;height:100px;margin:auto;">
+            <div class="text-center text-df" style="line-height:50px">上海纺织集团检测</div>
+          </div>
+        </el-col>
+        <el-col :span="4">
+          <div class="grid-content text-center" style="padding-top:10px;">
+            <img src="@/assets/22.jpg" alt="" style="width:200px;height:100px;margin:auto;">
+            <div class="text-center text-df" style="line-height:50px">重庆市计量质量检测研究院</div>
+          </div>
+        </el-col>
+        <el-col :span="4">
+          <div class="grid-content text-center" style="padding-top:10px;">
+            <img src="@/assets/33.jpg" alt="" style="width:200px;height:100px;margin:auto;">
+            <div class="text-center text-df" style="line-height:50px">广州检验检测认证集团</div>
+          </div>
+        </el-col>
+        <el-col :span="4">
+          <div class="grid-content text-center" style="padding-top:10px;">
+            <img src="@/assets/44.jpg" alt="" style="width:200px;height:100px;margin:auto;">
+            <div class="text-center text-df" style="line-height:50px">谱尼测试集团股份有限公司</div>
+          </div>
+        </el-col>
+        <el-col :span="4">
+          <div class="grid-content text-center" style="padding-top:10px;">
+            <img src="@/assets/55.jpg" alt="" style="width:200px;height:100px;margin:auto;">
+            <div class="text-center text-df" style="line-height:50px">深圳市计量质量检测研究院</div>
+          </div>
+        </el-col>
+        <el-col :span="4">
+          <div class="grid-content text-center" style="padding-top:10px;">
+            <img src="@/assets/66.jpg" alt="" style="width:200px;height:100px;margin:auto;">
+            <div class="text-center text-df" style="line-height:50px">中纺标检验认证股份有限公司</div>
+          </div>
+        </el-col>
+         <el-col :span="4">
+          <div class="grid-content text-center" style="padding-top:10px;">
+            <img src="@/assets/22.jpg" alt="" style="width:200px;height:100px;margin:auto;">
+            <div class="text-center text-df" style="line-height:50px">重庆市计量质量检测研究院</div>
+          </div>
+        </el-col>
+        <el-col :span="4">
+          <div class="grid-content text-center" style="padding-top:10px;">
+            <img src="@/assets/33.jpg" alt="" style="width:200px;height:100px;margin:auto;">
+            <div class="text-center text-df" style="line-height:50px">广州检验检测认证集团</div>
+          </div>
+        </el-col>
+        <el-col :span="4">
+          <div class="grid-content text-center" style="padding-top:10px;">
+            <img src="@/assets/44.jpg" alt="" style="width:200px;height:100px;margin:auto;">
+            <div class="text-center text-df" style="line-height:50px">谱尼测试集团股份有限公司</div>
+          </div>
+        </el-col>
+        <el-col :span="4">
+          <div class="grid-content text-center" style="padding-top:10px;">
+            <img src="@/assets/55.jpg" alt="" style="width:200px;height:100px;margin:auto;">
+            <div class="text-center text-df" style="line-height:50px">深圳市计量质量检测研究院</div>
+          </div>
+        </el-col>
+        <el-col :span="4">
+          <div class="grid-content text-center" style="padding-top:10px;">
+            <img src="@/assets/66.jpg" alt="" style="width:200px;height:100px;margin:auto;">
+            <div class="text-center text-df" style="line-height:50px">中纺标检验认证股份有限公司</div>
+          </div>
+        </el-col>
+         
+         
+        
+        
+        
+      </el-row>
     </div>
 </template>
 <script>
 export default {
   data() {
     const item = {
-      img: "http://wj.zljweb.com/zljfiles/BasicImages/nzfz.jpg",
+      img: "@/static/img/11.jpg",
       name: "王小虎"
     };
     return {
-      tableData: Array(24).fill(item),
+      tableData: Array(10).fill(item),
       currentPage: 1
     };
   },

@@ -258,6 +258,7 @@
                 <span class="tit">委托客户信息</span>
             </div>
             <div>
+                <el-button type="primary">主要按钮</el-button>
                 <ul class="shqrm_c" id="ulSampleMain">
                     <ul id="ulSampleTypeOne">
                         <li class="xiangq_ju">

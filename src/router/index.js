@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Main from '@/views/customer/main'
 import Common from '@/views/index/common'
+import user from '@/views/template/user-top.vue'
 Vue.use(Router)
 
 
@@ -32,6 +33,17 @@ export default new Router({
 					name: 'News',
 					component: () => import('@/views/news/index')
 				},
+				// 检测只是
+				{
+					path: '/test-knowledge',
+					name: 'test-knowledge',
+					component: () => import('@/views/index/test-knowledge')
+				},
+				{
+					path: '/test-knowledge-detail',
+					name: 'test-knowledge-detail',
+					component: () => import('@/views/index/test-knowledge-detail')
+				},
 				//机构展示
 				{
 					path: '/institution',
@@ -42,8 +54,59 @@ export default new Router({
 					path: '/potal',
 					name: 'Potal',
 					component: () => import('@/views/sort/potal')
+				},
+				// 产品列表
+				{
+					path: '/product',
+					name: 'Product',
+					component: () => import('@/views/product/index')
+				},
+				// 产品详情
+				{
+					path: '/productDetail',
+					name: 'ProductDetail',
+					component: () => import('@/views/product/detail')
+				},
+				// 服务提供商
+				{
+					path: '/server',
+					name: 'Server',
+					component: () => import('@/views/product/server')
+				},
+				
+			]
+		},
+		{
+			path: '/step',
+			name: 'user',
+			component: user,
+			children:[
+				{
+					path: '/step',
+					name: 'Step',
+					component: () => import('@/views/product/step')
+				},
+				{
+					path: '/step1',
+					name: 'Step1',
+					component: () => import('@/views/product/step1')
+				},
+				{
+					path: '/enter-step',
+					name: 'Enter',
+					component: () => import('@/views/institution/enter-step')
 				}
 			]
+		},
+		{
+			path: '/register',
+			name: 'Register',
+			component: () => import('@/views/login/register')
+		},
+		{
+			path: '/login',
+			name: 'Login',
+			component: () => import('@/views/login/login')
 		},
 		{
 			path: '/addOrder',
@@ -71,15 +134,37 @@ export default new Router({
 		// 	name: 'Cart',
 		// 	component: () => import('@/views/good1/cart')
 		// },
+		// 我的
 		{
 			path: '/customer',
 			name: 'Customer',
 			component: Main,
 			children: [
 				{
+					path: '/customer',
+					name: 'Order',
+					component: () => import('@/views/customer/customer')
+				},
+				{
 					path: '/order',
 					name: 'Order',
 					component: () => import('@/views/customer/order')
+				},
+				{
+					path: '/orderDetail',
+					name: 'OrderDetail',
+					component: () => import('@/views/customer/order-detail')
+				},
+				
+				{
+					path: '/orderPay',
+					name: 'OrderPay',
+					component: () => import('@/views/customer/order-pay')
+				}, 
+				{
+					path: '/payGateWay',
+					name: 'PayGateWay',
+					component: () => import('@/views/customer/payGateWay')
 				},
 				{
 					path: '/wallet',
@@ -126,9 +211,19 @@ export default new Router({
 				},
 				// 个人认证
 				{
-					path: '/userAuth',
-					name: 'UserAuth',
-					component: () => import('@/views/customer/authentication/user')
+					path: '/personal',
+					name: 'Personal',
+					component: () => import('@/views/customer/authentication/personal')
+				},
+				{
+					path: '/enterprise',
+					name: 'Enterprise',
+					component: () => import('@/views/customer/authentication/enterprise')
+				},
+				{
+					path: '/buydata',
+					name: 'Buydata',
+					component: () => import('@/views/customer/buydata')
 				},
 				
 			]
