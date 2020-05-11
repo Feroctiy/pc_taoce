@@ -1,11 +1,7 @@
 <template>
   <div class="content main_width">
     <!-- 产品详情 -->
-    <el-row
-      :gutter="20"
-      class="margin-top bg-white padding-top"
-      style="margin-left:0;margin-right:0"
-    >
+    <el-row :gutter="20" class="margin-top bg-white padding-top" style="margin-left:0;margin-right:0">
       <el-col :span="12">
         <div style="border:1px solid #ccc;">
           <img :src="goodsDetail.goodsImg" alt="" style="width:100%;">
@@ -25,41 +21,16 @@
           <div class="sp-item">
             <span>报告语言</span>
             <span>
-              <el-button
-                type="primary"
-                size="small"
-                :class="opt.reportLauguage == '1' ? '':'is-plain'"
-                @click="getReportLauguage('1')"
-              >中文报告</el-button>
-              <el-button
-                type="primary"
-                size="small"
-                :class="opt.reportLauguage == '2' ? '':'is-plain'"
-                @click="getReportLauguage('2')"
-              >英文报告</el-button>
-              <el-button
-                type="primary"
-                size="small"
-                :class="opt.reportLauguage == '3' ? '':'is-plain'"
-                @click="getReportLauguage('3')"
-              >中英文报告</el-button>
+              <el-button type="primary" size="small" :class="opt.reportLauguage == '1' ? '':'is-plain'" @click="getReportLauguage('1')">中文报告</el-button>
+              <el-button type="primary" size="small" :class="opt.reportLauguage == '2' ? '':'is-plain'" @click="getReportLauguage('2')">英文报告</el-button>
+              <el-button type="primary" size="small" :class="opt.reportLauguage == '3' ? '':'is-plain'" @click="getReportLauguage('3')">中英文报告</el-button>
             </span>
           </div>
           <div class="sp-item">
             <span>报告形式</span>
             <span>
-              <el-button
-                type="primary"
-                size="small"
-                :class="opt.reportType == '1' ? '':'is-plain'"
-                @click="getReportType('1')"
-              >检测报告</el-button>
-              <el-button
-                type="primary"
-                size="small"
-                :class="opt.reportType == '2' ? '':'is-plain'"
-                @click="getReportType('2')"
-              >报告证书</el-button>
+              <el-button type="primary" size="small" :class="opt.reportType == '1' ? '':'is-plain'" @click="getReportType('1')" >检测报告</el-button>
+              <el-button type="primary"  size="small" :class="opt.reportType == '2' ? '':'is-plain'" @click="getReportType('2')">报告证书</el-button>
             </span>
           </div>
           <div class="sp-item">
@@ -76,28 +47,26 @@
           </div>
           <div class="sp-item">
             <span>店铺</span>
-            <!-- <router-link to="/potal"> -->
+            <router-link :to="{path:'/potal', query:{ id : goodsDetail.shopid}}">
               <el-link type="primary" style="font-size:16px;">{{goodsDetail.shopName}}</el-link>
-            <!-- </router-link> -->
+            </router-link>
           </div>
           <div class="sp-item">
             <span>服务提供商</span>
-            <!-- <router-link to="/server"> -->
+            <router-link to="/server">
               <el-link type="primary" style="font-size:16px;">{{goodsDetail.jgmc}}</el-link>
-            <!-- </router-link> -->
+            </router-link>
           </div>
           <el-row class="margin-top padding-left">
-            <el-button class="margin-right">在线咨询</el-button>
-            <!-- <router-link to="/step"> -->
-            <el-button type="primary" @click="buy">立即购买</el-button>
-            <!-- </router-link> -->
+            <el-button class="margin-right">在线咨询</el-button> 
+            <el-button type="primary" @click="buy">立即购买</el-button> 
           </el-row>
         </div>
       </el-col>
     </el-row>
     <div class="bg-white" style="font-size:15px;padding:10px 20px;margin-bottom:10px;">
-      <span style="margin-right:15px;">收藏商品</span>
-      <span>收藏店铺</span>
+      <span style="margin-right:15px;cursor: pointer;">收藏商品</span>
+      <span style="cursor: pointer;">收藏店铺</span>
     </div>
     <el-row :gutter="10">
       <el-col :span="16" class="bg-white padding-top">

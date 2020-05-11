@@ -31,30 +31,17 @@
             <p>联系机构</p>
           </h3>
           <div class="tzsb-jj tzsb-jjwz gl1potal" style="display:block" v-if="type == '3'">
-            <p
-              id="OrgIntroduction"
-            >浙江省计量科学研究院（ZJIM）是浙江省人民政府计量行政部门依法设置并经国家总局授权的省级法定计量检定机构，属公益一类事业单位，是浙江省科技厅重点扶植科研院所之一。ZJIM经过58年的发展，在人才队伍、科技创新、项目建设、管理能力、履职服务等方面取得长足进步，大力提升了机构的综合技术能力和服务能力，充分发挥计量在现代社会治理体系中的积极作用，为浙江经济社会发展提供强有力的支撑。
-              <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;截至2018年10月，ZJIM在多个学科和领域建立了浙江省社会公用计量标准318项，通过法定计量机构考核授权的检定、校准和检测项目929项，通过国家实验室认可检测项目622项，通过检验检测机构资质认定的检测项目236类，计量器具国家型式评价实验室授权共12类31项。可对长度、力学、热工、电磁、无线电、声学、时间频率、化学、光学、电离辐射等领域计量器具及参数进行检定、校准和全性能检测。基本建立起有效服务科技创新和产业转型升级、适应浙江经济和社会发展需要的社会公用计量标准体系。ZJIM目前拥有实验室面积3万多平方米，设备资产超过3亿元，截至2018年10月，有在册职工267人，其中博士14人、硕士104人，正高职称14人、副高职称82人、中级职称106人，中高级职称人员约占总人数的76%。ZJIM下设电能计量研究所、流量计量研究所、热工计量研究所、力学计量研究所、长度与光学计量研究所、信息与电磁计量研究所、交通与声学计量研究所、医疗与化学计量研究所。依托专业部门建有OIML电能表国际互认实验室、国家电能表产品质量监督检验中心（浙江）、国家液体流量计量器具质量监督检验中心（浙江）、国家城市能源计量中心（浙江）、国家海洋油气资源开发装备产业计量中心（筹）、浙江省能源与环境保护计量检测重点实验室、浙江省数字精密测量技术研究重点实验室、浙江省声学振动精密测量技术研究重点实验室、浙江省测力与称重传感器工程实验室。机构同时设有院士专家工作站、博士后科研工作站、大学生见习训练基地等创新载体。
-            </p>
+            <p id="OrgIntroduction">机构简介</p>
           </div>
           <div class="tzsb-jj tzsb-jjwz gl1potal" style="display:block" v-if="type == '1'">
             <el-container style="height:auto; border: 1px solid #eee">
               <el-aside width="200px">
-                <el-menu :default-openeds="['1', '2','3']" unique-opened router>
-                  <el-submenu index="1">
-                    <template slot="title">食品农产品</template>
-                    <el-menu-item index="/order">酒类</el-menu-item>
-                    <el-menu-item index="/order">酒类</el-menu-item>
+                <el-menu :default-openeds="['1', '2','3']" unique-opened>
+                  <el-submenu index="1" v-for="(item,index) in shopCategoryList" :key="index">
+                    <template slot="title">{{item.cat_one_name}}</template>
+                    <el-menu-item v-for="(ite,idx) in item.twolist" :key="idx">{{ite.cate_two_name}}</el-menu-item>
                   </el-submenu>
-                  <!-- <el-submenu index="2">
-                    <template slot="title">资金管理</template>
-                    <el-menu-item index="/wallet">我的钱包</el-menu-item>
-                  </el-submenu>
-                  <el-submenu index="3">
-                    <template slot="title">设置</template>
-                    <el-menu-item index="/userInfo">用户信息</el-menu-item>
-                  </el-submenu> -->
-                  <!-- <el-menu-item index="/addorder">在线委托</el-menu-item> -->
+                  <el-menu-item @click="onLineAddOrder">在线委托</el-menu-item>
                 </el-menu>
               </el-aside>
               <el-container>
@@ -119,13 +106,40 @@ export default {
   name: "Sort",
   data() {
     return {
+      shopCategoryList: [],
+
       value: "3",
       type: "1",
       list: [{}, {}, {}, {}, {}, {}, {}]
     };
   },
   mounted() {},
+  created() {
+    console.log(this.$route.query.id);
+    this.getShopCategoryList();
+  },
   methods: {
+    // 获取店铺的一级分类、二级分类
+    getShopCategoryList() {
+      this.$fetch("/api/category/oms/shopCategoryList", {
+        shopId: this.$route.query.id
+      }).then(response => {
+        console.log(response);
+        if (response.code == 0) {
+          this.shopCategoryList = response.data;
+        }
+      });
+    },
+    // 获取店铺的商品列表
+    // get
+    // 自定义委托跳转
+    onLineAddOrder() {
+      this.$router.push({
+        path: "/addOrder",
+        query: { id: '', shopid: this.$route.query.id }
+      });
+    },
+
     goDetail() {},
     goItem(type) {
       this.type = type;
