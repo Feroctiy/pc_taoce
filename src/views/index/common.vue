@@ -89,7 +89,9 @@ export default {
       input: "",
       selectType: "1",
       activeIndex2: "",
-      userInfo: {},
+      userInfo: {
+        username:''
+      },
       input1: "",
       input2: "",
       input3: "",
@@ -98,19 +100,21 @@ export default {
   },
   created() {
     if (window.localStorage.getItem("paoce_token")) {
-      this.$fetch( "/api/user/userInfo?token=" + window.localStorage.getItem("paoce_token")).then(response => {
-        this.userInfo = response.data;
-      });
+      // this.$fetch( "/api/user/userInfo?token=" + window.localStorage.getItem("paoce_token")).then(response => {
+      //   this.userInfo = response.data;
+      // });
     } else {
-      this.userInfo = {};
+      this.userInfo = {
+        username:''
+      };
     }
   },
   methods: {
     goUrl(url) {
-      // if (!window.localStorage.getItem("paoce_token")) {
-      //   this.$router.push({ path: "/login" });
-      //   return;
-      // }
+      if (!window.localStorage.getItem("paoce_token")) {
+        this.$router.push({ path: "/login" });
+        return;
+      }
       this.$router.push({ path: url });
     },
     loginout() {

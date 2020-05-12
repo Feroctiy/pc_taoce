@@ -25,77 +25,53 @@
                 <ul class="shqrm_c" id="ulSampleMain">
                     <ul id="ulSampleTypeOne">
                         <li class="xiangq_ju">
-                            <span class="shenqrxq_bt">
-                                样品名称
-                                <span class="weit_xhx">*</span>
-                            </span>
-                            <el-input
-                                v-model="param.ypmc"
-                                placeholder="请输入样品名称"
-                                class="container_input required"
-                                maxlength="200"
-                            ></el-input>
+                          <span class="shenqrxq_bt"> 样品名称 <span class="weit_xhx">*</span> </span>
+                          <el-input v-model="param.ypmc" placeholder="请输入样品名称" class="container_input required"  maxlength="200" ></el-input>
                         </li>
                         <li class="xiangq_ju">
-                            <span class="shenqrxq_bt">样品英文名称</span>
-                            <el-input
-                                v-model="param.ypenmc"
-                                placeholder="请输入样品名称"
-                                class="container_input required"
-                                maxlength="200"
-                            ></el-input>
+                          <span class="shenqrxq_bt">样品英文名称</span>
+                          <el-input v-model="param.ypenmc" placeholder="请输入样品名称" class="container_input required" maxlength="200" ></el-input>
                         </li>
                         <li class="xiangq_ju">
                             <span class="shenqrxq_bt">型号规格</span>
-                            <el-input
-                                v-model="param.ypenmc"
-                                placeholder="请输入型号规格"
-                                class="container_input required"
-                                maxlength="200"
-                            ></el-input>
+                            <el-input v-model="param.ypenmc" placeholder="请输入型号规格" class="container_input required" maxlength="200" ></el-input>
                         </li>
                         <li class="xiangq_ju ysjs_two">
                             <span class="shenqrxq_bt">样品商标</span>
                             <el-input
                                 v-model="param.ypenmc"
-                                placeholder="如为图片等格式，可以附件形式上传"
+                                placeholder="如为图片等格式,以附件形式上传"
                                 class="container_input required"
                                 maxlength="200"
                             ></el-input>
                         </li>
                         <li class="xiangq_ju">
                             <span class="shenqrxq_bt">保密程度</span>
-                            <input
-                                id="SampleGrade"
-                                name="SampleGrade"
-                                class="container_input"
-                                type="text"
-                                placeholder="如：优等品、合格品、一等品等"
-                                maxlength="50"
-                                value=""
-                            >
+                            <el-select v-model="param.ypbmyq" placeholder="请选择">
+                                <el-option
+                                    v-for="item in ypbmyqList"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value"
+                                ></el-option>
+                            </el-select>
                         </li>
                         <li class="xiangq_ju">
                             <span class="shenqrxq_bt">生产日期</span>
-                            <input
-                                id="ProductionDate"
-                                name="ProductionDate"
-                                class="container_input layuiDateTime"
-                                type="text"
-                                placeholder="如无需精确到日，请选择当月1号"
-                                value=""
-                                lay-key="1"
-                            >
+                            <el-date-picker v-model="param.value1" type="date" placeholder="选择日期"></el-date-picker>
                         </li>
                         <li class="xiangq_ju">
                             <span class="shenqrxq_bt">
                                 样品退还方式
                                 <span class="weit_xhx">*</span>
                             </span>
-                            <el-select placeholder="请选择" class="form-control">
-                                <option value="常温">常温</option>
-                                <option value="保质期">保质期</option>
-                                <option value="特殊要求">特殊要求</option>
+                            <el-select v-model="param.ypthfs" placeholder="请选择">
+                                <el-option
+                                    v-for="item in ypthfsList"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value"
+                                ></el-option>
                             </el-select>
                         </li>
                     </ul>
@@ -106,23 +82,21 @@
             <div slot="header" class="clearfix">
                 <span class="tit">检测项目</span>
             </div>
-            <div>
-                <el-button @click="addTest">新增检测标准</el-button>
-            </div>
             <!-- 服务需求 -->
-            <div>服务需求</div>
+            <div class="server-title">服务需求</div>
             <div>
-                <el-radio-group v-model="param.fwxq">
-                    <el-radio-button label="上海"></el-radio-button>
-                    <el-radio-button label="北京"></el-radio-button>
-                    <el-radio-button label="广州"></el-radio-button>
-                    <el-radio-button label="深圳"></el-radio-button>
-                </el-radio-group>
+                <el-checkbox-group v-model="param.fwxq">
+                    <el-checkbox-button
+                        v-for="item in serviceDemandList"
+                        :label="item.id"
+                        :key="item.id"
+                    >{{item.mc}}</el-checkbox-button>
+                </el-checkbox-group>
             </div>
             <div style="margin:20px 0;">
                 <el-radio v-model="param.sqlx" label="1">新申请</el-radio>
                 <el-radio v-model="param.sqlx" label="2">变更</el-radio>
-                <el-radio v-model="param.sqlx" label="2">派生</el-radio>
+                <el-radio v-model="param.sqlx" label="3">派生</el-radio>
             </div>
             <div>
                 <el-radio-group v-model="param.ypxh">
@@ -131,23 +105,27 @@
                 </el-radio-group>
             </div>
             <!-- ypsl -->
-            <div>机构</div>
+            <div class="server-title">机构</div>
             <el-radio-group v-model="param.jgid">
-                <el-radio-button v-for="item in agencyList" :key="item.jid" :label="item.jid">{{item.jmc}}</el-radio-button>
+                <el-radio-button
+                    v-for="item in agencyList"
+                    :key="item.jid"
+                    :label="item.jid"
+                >{{item.jmc}}</el-radio-button>
             </el-radio-group>
-            <div>接种实验室</div>
+            <div class="server-title">接种实验室</div>
             <div>
                 <el-radio-group v-model="param.libid">
                     <el-radio-button
-                        v-for="item in receivingSampleLibEntityList"
+                        v-for="item in receivingSampleLibList"
                         :key="item.id"
                         :label="item.id"
                     >{{item.mc}}</el-radio-button>
                 </el-radio-group>
             </div>
-            <div>认证周期</div>
-            <div>样品数量</div>
-            <div>附加服务</div>
+            <div class="server-title">认证周期</div>
+            <div class="server-title">样品数量</div>
+            <div class="server-title">附加服务</div>
             <div>
                 <el-checkbox v-model="checked">加 急</el-checkbox>
                 <div style="margin-top:10px;">
@@ -156,224 +134,6 @@
                     2、加急服务会额外收取
                     <span>3333</span>元的服务费用
                 </div>
-            </div>
-        </el-card>
-        <el-card class="box-card margin-bottom">
-            <div slot="header" class="clearfix">
-                <span class="tit">委托客户信息</span>
-            </div>
-            <div>
-                <el-button type="primary">主要按钮</el-button>
-                <ul class="shqrm_c" id="ulSampleMain">
-                    <ul id="ulSampleTypeOne">
-                        <li class="xiangq_ju">
-                            <span class="shenqrxq_bt">
-                                委托单位名称
-                                <span class="weit_xhx">*</span>
-                            </span>
-                            <input
-                                id="SampleName"
-                                name="SampleName"
-                                class="container_input required"
-                                fieldname="样品名称"
-                                type="text"
-                                maxlength="50"
-                                value=""
-                            >
-                        </li>
-                        <li class="xiangq_ju">
-                            <span class="shenqrxq_bt">委托单位英文名称</span>
-                            <input
-                                id="SampleNameEn"
-                                name="SampleNameEn"
-                                class="container_input"
-                                type="text"
-                                maxlength="50"
-                                value=""
-                            >
-                        </li>
-                        <li class="xiangq_ju">
-                            <span class="shenqrxq_bt">
-                                统一社会信用代码
-                                <span class="weit_xhx">*</span>
-                            </span>
-                            <input
-                                id="SampleNameEn"
-                                name="SampleNameEn"
-                                class="container_input"
-                                type="text"
-                                maxlength="50"
-                                value=""
-                                style="width:auto;"
-                            >
-                        </li>
-                        <li class="xiangq_ju">
-                            <span class="shenqrxq_bt">批号/编号/款号</span>
-                            <input
-                                id="BatchNo"
-                                name="BatchNo"
-                                class="container_input"
-                                type="text"
-                                maxlength="500"
-                                value=""
-                            >
-                        </li>
-                        <li class="xiangq_ju ysjs_two">
-                            <span class="shenqrxq_bt">样品描述</span>
-                            <input
-                                id="SamplesStatus"
-                                name="SamplesStatus"
-                                class="container_input"
-                                type="text"
-                                maxlength="500"
-                                value=""
-                            >
-                        </li>
-                        <li class="xiangq_ju">
-                            <span class="shenqrxq_bt">型号规格</span>
-                            <input
-                                id="Specifications"
-                                name="Specifications"
-                                class="container_input"
-                                type="text"
-                                maxlength="50"
-                                value=""
-                            >
-                        </li>
-                        <li class="xiangq_ju">
-                            <span class="shenqrxq_bt">样品商标</span>
-                            <input
-                                id="SampleTrademark"
-                                name="SampleTrademark"
-                                class="container_input"
-                                type="text"
-                                maxlength="50"
-                                value=""
-                                placeholder="如为图片等格式，可以附件形式上传"
-                                style="width: 225px;"
-                            >
-                        </li>
-                        <li class="xiangq_ju">
-                            <span class="shenqrxq_bt">样品等级</span>
-                            <input
-                                id="SampleGrade"
-                                name="SampleGrade"
-                                class="container_input"
-                                type="text"
-                                placeholder="如：优等品、合格品、一等品等"
-                                maxlength="50"
-                                value=""
-                            >
-                        </li>
-                        <li class="xiangq_ju">
-                            <span class="shenqrxq_bt">生产日期</span>
-                            <input
-                                id="ProductionDate"
-                                name="ProductionDate"
-                                class="container_input layuiDateTime"
-                                type="text"
-                                placeholder="如无需精确到日，请选择当月1号"
-                                value=""
-                                lay-key="1"
-                            >
-                        </li>
-                        <li class="xiangq_ju">
-                            <span class="shenqrxq_bt">生产单位名称</span>
-                            <input
-                                id="ProductionUnit"
-                                name="ProductionUnit"
-                                class="container_input"
-                                type="text"
-                                placeholder="请输入样品生产单位名称"
-                                maxlength="100"
-                                value=""
-                            >
-                        </li>
-                        <li class="xiangq_ju">
-                            <span class="shenqrxq_bt">贮存要求</span>
-                            <el-select placeholder="请选择" class="form-control">
-                                <option value="常温">常温</option>
-                                <option value="保质期">保质期</option>
-                                <option value="特殊要求">特殊要求</option>
-                            </el-select>
-                        </li>
-                        <li class="xiangq_ju">
-                            <span class="shenqrxq_bt">保密要求</span>
-                            <el-select placeholder="请选择" class="form-control">
-                                <option value="常温">常温</option>
-                                <option value="保质期">保质期</option>
-                                <option value="特殊要求">特殊要求</option>
-                            </el-select>
-                        </li>
-                    </ul>
-                    <ul id="ulSampleTypeTwo" style="display:none;">
-                        <li class="xiangq_ju">
-                            <span class="shenqrxq_bt">
-                                预约现场检测时间
-                                <span class="weit_xhx">*</span>
-                            </span>
-                            <input
-                                id="AppointmentTestDate"
-                                name="AppointmentTestDate"
-                                class="container_input layuiDateTime required"
-                                type="text"
-                                fieldname="预约现场检测时间"
-                                placeholder="请选择预约现场检测时间"
-                                maxlength="100"
-                                style="width: 187px;"
-                                value=""
-                                lay-key="2"
-                            >
-                        </li>
-                        <li class="xiangq_ju dizxx">
-                            <span class="shenqrxq_bt">
-                                预约上门地址
-                                <span class="weit_xhx">*</span>
-                            </span>
-                            <ul class="dizhi_xx">
-                                <li class="ysjs_lm">
-                                    <div id="divAppointmentAddressID">
-                                        <div class="addressfield active">
-                                            <label>
-                                                <input
-                                                    type="radio"
-                                                    name="AppointmentAddressID"
-                                                    value="2732"
-                                                    vid="0"
-                                                >
-                                                <span>上海市 市辖区 闵行区&nbsp;浦江镇浦星公路800号D座203室&nbsp;&nbsp;彭余曦&nbsp;15756656072</span>
-                                            </label>
-                                        </div>
-                                        <div class="addressfield">
-                                            <label>
-                                                <input
-                                                    type="radio"
-                                                    name="AppointmentAddressID"
-                                                    value="3223"
-                                                    vid="0"
-                                                >
-                                                <span>上海市 市辖区 闵行区&nbsp;浦星公路800号D座203室&nbsp;&nbsp;彭余曦&nbsp;15756656072</span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="addresslink gl3-addresslink">
-                                        <a
-                                            href="javascript:void(0)"
-                                            onclick="addAddress('AppointmentAddressID')"
-                                        >新增地址+</a>
-                                        <span
-                                            class="gl2-address-more addressmore"
-                                            onclick="addressnone(this)"
-                                        >
-                                            更多地址
-                                            <i class="gl3-more"></i>
-                                        </span>
-                                    </div>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </ul>
             </div>
         </el-card>
         <router-link to="/addOrder2">
@@ -396,16 +156,36 @@ export default {
       param: {
         sqlx: "1"
       },
+      ypbmyqList: [
+        { value: "一般保密", label: "一般保密" },
+        { value: "严格保密", label: "严格保密" }
+      ],
+      ypthfsList: [
+        { value: "代为处理", label: "代为处理" },
+        { value: "客户自取", label: "客户自取" },
+        { value: "邮寄", label: "邮寄" }
+      ],
       agencyList: [],
-      receivingSampleLibList:[],
+      receivingSampleLibList: [],
+      serviceDemandList: [{}],
       testStatus: false
     };
   },
   created() {
+    this.getServiceDemand();
     this.getAgencyList();
   },
   mounted() {},
   methods: {
+    //  获取服务需求
+    getServiceDemand() {
+      this.$fetch("/api/serviceDemand/listAll", {}).then(response => {
+        if (response.code == 0) {
+          this.serviceDemandList = response.data;
+          console.log(this.serviceDemandList);
+        }
+      });
+    },
     // 获取商户下的机构列表
     getAgencyList() {
       this.$fetch("/api/order/agencyListByShop", {
@@ -414,7 +194,7 @@ export default {
         console.log(response);
         if (response.code == 0) {
           this.agencyList = response.data;
-          this.getLibList(response.data[0].jid)
+          this.getLibList(response.data[0].jid);
         }
       });
     },
@@ -444,6 +224,13 @@ export default {
 };
 </script>
 <style>
+.server-title {
+  line-height: 40px;
+  border-bottom: 1px solid #f1f1f1;
+  font-size: 18px;
+  font-weight: 400;
+  margin: 15px 0;
+}
 .shqrm_c td {
   height: 48px;
   padding: 2px 8px 2px 14px;
@@ -546,12 +333,12 @@ export default {
 </style>
 <style scoped>
 .el-radio-button .el-radio-button__inner {
-    border-left: 1px solid #DCDFE6;
-    border-radius: 4px;
-    -webkit-box-shadow: none!important;
-    box-shadow: none!important;
-    margin-right: 10px;
-    margin-bottom: 10px;
+  border-left: 1px solid #dcdfe6;
+  border-radius: 4px;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
 </style>
 
