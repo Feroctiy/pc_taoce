@@ -1,10 +1,6 @@
 <template>
-  <div class="main_width" style="padding-left:10px;box-sizing: border-box;overflow: auto;">
-    <div class="user_rt_cont gl2-user_rt_cont wddd_d gl2-wddd_d">
-      <div class="top_title wddd_xx gl2-wddd_xx">
-        <strong>用户认证</strong>
-      </div>
-    </div>
+  <div class="main_width customer">
+    <div class="gl2-wddd_d"><div class="top_title"><strong>用户认证</strong></div></div>
     <div class="bg-white padding">
       <el-row :gutter="20" type="flex" class="row-bg" justify="space-around">
         <el-col :span="12">
@@ -15,7 +11,7 @@
             <div class="gl3-certification-img">
               <img src="http://zljweb.com/images/enterprisecertification.png" alt="">
             </div>
-            <router-link to="/enterprise">
+            <router-link to="/enterpriseList">
               <el-button type="primary" plain style="width: 50%;">企业认证</el-button>
             </router-link>
           </div>
@@ -40,19 +36,15 @@
 <script>
 export default {
   data() {
-    const item = {
-      date: "2016-05-02",
-      name: "王小虎",
-      address: "上海市普陀区金沙江路 1518 弄",
-      type: "专用发票"
-    };
     return {
-      tableData: Array(5).fill(item)
     };
   }
 };
 </script>
 <style>
+@import "../../../style/customer.css";
+</style>
+<style scoped>
 .el-row {
   margin-bottom: 20px;
 }

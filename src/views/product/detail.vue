@@ -1,7 +1,7 @@
-<template>
+ <template>
   <div class="content main_width">
     <!-- 产品详情 -->
-    <el-row :gutter="20" class="margin-top bg-white padding-top" style="margin-left:0;margin-right:0">
+    <el-row :gutter="20" class="margin-top bg-white padding-top" style="margin-left:0;margin-right:0" >
       <el-col :span="12">
         <div style="border:1px solid #ccc;">
           <img :src="goodsDetail.goodsImg" alt="" style="width:100%;">
@@ -21,16 +21,41 @@
           <div class="sp-item">
             <span>报告语言</span>
             <span>
-              <el-button type="primary" size="small" :class="opt.reportLauguage == '1' ? '':'is-plain'" @click="getReportLauguage('1')">中文报告</el-button>
-              <el-button type="primary" size="small" :class="opt.reportLauguage == '2' ? '':'is-plain'" @click="getReportLauguage('2')">英文报告</el-button>
-              <el-button type="primary" size="small" :class="opt.reportLauguage == '3' ? '':'is-plain'" @click="getReportLauguage('3')">中英文报告</el-button>
+              <el-button
+                type="primary"
+                size="small"
+                :class="opt.reportLauguage == '1' ? '':'is-plain'"
+                @click="getReportLauguage('1')"
+              >中文报告</el-button>
+              <el-button
+                type="primary"
+                size="small"
+                :class="opt.reportLauguage == '2' ? '':'is-plain'"
+                @click="getReportLauguage('2')"
+              >英文报告</el-button>
+              <el-button
+                type="primary"
+                size="small"
+                :class="opt.reportLauguage == '3' ? '':'is-plain'"
+                @click="getReportLauguage('3')"
+              >中英文报告</el-button>
             </span>
           </div>
           <div class="sp-item">
             <span>报告形式</span>
             <span>
-              <el-button type="primary" size="small" :class="opt.reportType == '1' ? '':'is-plain'" @click="getReportType('1')" >检测报告</el-button>
-              <el-button type="primary"  size="small" :class="opt.reportType == '2' ? '':'is-plain'" @click="getReportType('2')">报告证书</el-button>
+              <el-button
+                type="primary"
+                size="small"
+                :class="opt.reportType == '1' ? '':'is-plain'"
+                @click="getReportType('1')"
+              >检测报告</el-button>
+              <el-button
+                type="primary"
+                size="small"
+                :class="opt.reportType == '2' ? '':'is-plain'"
+                @click="getReportType('2')"
+              >报告证书</el-button>
             </span>
           </div>
           <div class="sp-item">
@@ -53,20 +78,20 @@
           </div>
           <div class="sp-item">
             <span>服务提供商</span>
-            <router-link to="/server">
+            <router-link :to="{path:'/server', query:{ id : goodsDetail.jgid}}">
               <el-link type="primary" style="font-size:16px;">{{goodsDetail.jgmc}}</el-link>
             </router-link>
           </div>
           <el-row class="margin-top padding-left">
-            <el-button class="margin-right">在线咨询</el-button> 
-            <el-button type="primary" @click="buy">立即购买</el-button> 
+            <el-button class="margin-right">在线咨询</el-button>
+            <el-button type="primary" @click="buy">立即购买</el-button>
           </el-row>
         </div>
       </el-col>
     </el-row>
     <div class="bg-white" style="font-size:15px;padding:10px 20px;margin-bottom:10px;">
-      <span style="margin-right:15px;cursor: pointer;">收藏商品</span>
-      <span style="cursor: pointer;">收藏店铺</span>
+      <span style="margin-right:15px;cursor: pointer;" @click="collectGood" v-if="goodsDetail.isscdp == 0">收藏商品</span>
+      <span style="cursor: pointer;" @click="collectShop">收藏店铺</span>
     </div>
     <el-row :gutter="10">
       <el-col :span="16" class="bg-white padding-top">
@@ -86,11 +111,15 @@
                   <span>三、检测项目</span>
                 </div>
                 <div class="padding-bottom">
-                  <el-table :data="goodsDetail.goodsCheckitemEntityList" border="" style="width: 100%">
+                  <el-table
+                    :data="goodsDetail.goodsCheckitemEntityList"
+                    border=""
+                    style="width: 100%"
+                  >
                     <el-table-column prop="capabilityLibEntity.jcxm" label="项目名称" width="180"></el-table-column>
                     <el-table-column prop="capabilityLibEntity.bzh" label="项目标准" width="180">
                       <template slot-scope="scope">
-                        <span>{{ scope.row.capabilityLibEntity.bzh + "  '|'  " + scope.row.capabilityLibEntity.bzhmc}}</span>
+                        <span>{{ scope.row.capabilityLibEntity.bzh + " '|' " + scope.row.capabilityLibEntity.bzhmc}}</span>
                       </template>
                     </el-table-column>
                     <el-table-column prop="capabilityLibEntity.jczq" label="检测周期（工作日）"></el-table-column>
@@ -108,14 +137,22 @@
           <div class="hot-title detail-title text-center">热门推荐</div>
           <div>
             <div style="text-align:center">
-              <img src="https://jjjcn.oss-cn-beijing.aliyuncs.com/20200508/ba0e97de298c4f49bdffdcf3a2bd21a9.png" alt="" style="width:80%;">
+              <img
+                src="https://jjjcn.oss-cn-beijing.aliyuncs.com/20200508/ba0e97de298c4f49bdffdcf3a2bd21a9.png"
+                alt=""
+                style="width:80%;"
+              >
             </div>
             <div class="text-center text-df" style="line-height:50px;">日常防护型口罩</div>
             <!-- <div class="text-center">￥6646.00</div> -->
           </div>
           <div>
             <div style="text-align:center">
-              <img src="https://jjjcn.oss-cn-beijing.aliyuncs.com/20200508/77566458cd864ddabe59e657be389440.png" alt="" style="width:80%;">
+              <img
+                src="https://jjjcn.oss-cn-beijing.aliyuncs.com/20200508/77566458cd864ddabe59e657be389440.png"
+                alt=""
+                style="width:80%;"
+              >
             </div>
             <div class="text-center text-df" style="line-height:50px;">医用防护口罩</div>
             <!-- <div class="text-center">￥6646.00</div> -->
@@ -127,13 +164,9 @@
 </template>
 <script>
 export default {
-  data() {
-    const item = {
-      img: "http://wj.zljweb.com/zljfiles/BasicImages/nzfz.jpg",
-      name: "王小虎"
-    };
-    return {
-      tableData: Array(24).fill(item),
+  data() { 
+    return { 
+      userInfo:{},
       currentPage: 1,
       activeName: "1",
       goodsDetail: {},
@@ -157,6 +190,39 @@ export default {
     });
   },
   methods: {
+    // 收藏商品
+    collectGood() {
+      var _this = this;
+      if (!window.localStorage.getItem("paoce_token")) {
+        this.$router.push({ path: "/login", query: { type: "1" } });
+        return;
+      }
+      this.$fetch("/api/user/addUserCollectionGoods",{
+        goodsId: _this.goodsDetail.goodsId,
+        shopId: _this.goodsDetail.shopid
+      }).then(response => {
+        console.log(response);
+        if (response.code == 0) {
+           this.$message({ message: '收藏商品成功', type: 'success' });
+        }
+      });
+    },
+    // 收藏店铺
+    collectShop() {
+      var _this = this;
+      if (!window.localStorage.getItem("paoce_token")) {
+        this.$router.push({ path: "/login", query: { type: "1" } });
+        return;
+      }
+      this.$fetch("/api/user/addUserCollectionShop",{
+        id: _this.goodsDetail.shopid
+      }).then(response => {
+        console.log(response);
+        if (response.code == 0) {
+           this.$message({ message: '收藏店铺成功', type: 'success' });
+        }
+      });
+    },
     handleClick() {},
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
@@ -167,16 +233,29 @@ export default {
     goDetail() {
       this.$router.push({ path: "/potal" });
     },
+    // 立即购买
     buy() {
       this.goodsDetail.opt = this.opt;
-      console.log(this.goodsDetail);
-      window.localStorage.setItem( "paoce_token-detail", JSON.stringify(this.goodsDetail) );
-      window.localStorage.removeItem('taoce-param')
+      window.localStorage.setItem("paoce_token-detail",JSON.stringify(this.goodsDetail));
+      window.localStorage.removeItem("taoce-param");
       if (!window.localStorage.getItem("paoce_token")) {
-        this.$router.push({ path: "/login",query:{ type :'1' }  });
+        this.$router.push({ path: "/login", query: { type: "1" } });
         return;
       }
-      this.$router.push({ path: "/step" });
+      this.$fetch( "/api/user/userInfo?token=" + window.localStorage.getItem("paoce_token")).then(response => {
+        console.log(response)
+        if(response.isrz == '1'){
+          this.$router.push({ path: "/step" });
+        }else{
+          this.$confirm('您还未进行认证, 是否前往认证?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+             this.$router.push({ path: "/authentication" });
+          }).catch(() => {});
+        }
+      });
     },
     getReportLauguage(type) {
       this.opt.reportLauguage = type;

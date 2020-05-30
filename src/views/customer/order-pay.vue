@@ -127,11 +127,7 @@ export default {
           this.orderSn +
           "&device=web&payType=" +
           this.onLinePay,
-        {
-          orderSn: this.orderSn,
-          device: "web",
-          payType: this.onLinePay
-        }
+        {}
       ).then(response => {
         console.log(response);
         if (_this.onLinePay == "2") {

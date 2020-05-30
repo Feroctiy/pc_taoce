@@ -95,6 +95,16 @@ export default new Router({
 					path: '/enter-step',
 					name: 'Enter',
 					component: () => import('@/views/institution/enter-step')
+				},
+				{
+					path: '/addOrder',
+					name: 'Order',
+					component: () => import('@/views/order/addOrder')
+				},
+				{
+					path: '/addOrder2',
+					name: 'Order',
+					component: () => import('@/views/order/addOrder2')
 				}
 			]
 		},
@@ -108,16 +118,7 @@ export default new Router({
 			name: 'Login',
 			component: () => import('@/views/login/login')
 		},
-		{
-			path: '/addOrder',
-			name: 'Order',
-			component: () => import('@/views/order/addOrder')
-		},
-		{
-			path: '/addOrder2',
-			name: 'Order',
-			component: () => import('@/views/order/addOrder2')
-		},
+		
 		{
 			path: '/addOrder3',
 			name: 'Order',
@@ -142,7 +143,7 @@ export default new Router({
 			children: [
 				{
 					path: '/customer',
-					name: 'Order',
+					name: 'Customer',
 					component: () => import('@/views/customer/customer')
 				},
 				{
@@ -221,10 +222,44 @@ export default new Router({
 					component: () => import('@/views/customer/authentication/enterprise')
 				},
 				{
+					path: '/enterpriseList',
+					name: 'EnterpriseList',
+					component: () => import('@/views/customer/authentication/enterpriseList')
+				},
+				{
 					path: '/buydata',
 					name: 'Buydata',
 					component: () => import('@/views/customer/buydata')
 				},
+				// 修改密码
+				{
+					path: '/updatePwd',
+					name: 'UpdatePwd',
+					component: () => import('@/views/customer/UpdatePwd')
+				},
+				{
+					path: '/myQA',
+					name: 'MyQA',
+					component: () => import('@/views/customer/myQA')
+				},
+				// 我的关注
+				{
+					path: '/myForce',
+					name: 'MyForce',
+					component: () => import('@/views/customer/myForce')
+				},
+				// 反馈意见
+				{
+					path: '/feedback',
+					name: 'Feedback',
+					component: () => import('@/views/customer/feedback')
+				},
+				// 我的收藏
+				{
+					path: '/collection',
+					name: 'Collection',
+					component: () => import('@/views/customer/collection')
+				}
 				
 			]
 		},

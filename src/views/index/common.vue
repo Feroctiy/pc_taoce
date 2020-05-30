@@ -20,7 +20,7 @@
             <span class="padding-right cursor-pointer" @click="goUrl('/sort')">我要检测</span>
             <span class="padding-right cursor-pointer" @click="goUrl('/enter-step')">我要开店</span>
             <span class="padding-right cursor-pointer" @click="goUrl('/order')">草稿箱</span>
-            <span class="padding-right cursor-pointer" @click="goUrl('')">收藏夹</span>
+            <span class="padding-right cursor-pointer" @click="goUrl('/collection')">收藏夹</span>
             <el-popover placement="top-start" width="100" trigger="hover">
               <div>
                 <img src="@/assets/log.png" alt="" width="100px">
@@ -32,7 +32,7 @@
       </div>
       <div class="logo_nav main_width flex" style="margin:10px auto" id="logo_nav">
         <div class="text-center">
-          <!-- <img src="@/assets/log.png" alt="" width="100px" class="text-center"> -->
+          <img src="@/assets/logo/logo.png" alt="" width="100px" class="text-center">
         </div>
         <div style="width:500px;margin-left:100px;margin-top:5px;">
           <el-input placeholder="请输入内容" class="input-with-select" v-model="input">
@@ -60,9 +60,9 @@
           <el-menu-item index="/">产品分类</el-menu-item>
           <el-menu-item index="/">首页</el-menu-item>
           <el-menu-item index="/news">新闻中心</el-menu-item>
-          <el-menu-item index="/">问答</el-menu-item>
+          <el-menu-item index="/1">问答</el-menu-item>
           <el-menu-item index="/institution">机构展示</el-menu-item>
-          <el-menu-item index="/">查询</el-menu-item>
+          <el-menu-item index="/1">查询</el-menu-item>
           <el-menu-item index="/test-knowledge">检测知识</el-menu-item>
         </el-menu>
       </div>
@@ -100,9 +100,9 @@ export default {
   },
   created() {
     if (window.localStorage.getItem("paoce_token")) {
-      // this.$fetch( "/api/user/userInfo?token=" + window.localStorage.getItem("paoce_token")).then(response => {
-      //   this.userInfo = response.data;
-      // });
+      this.$fetch( "/api/user/userInfo?token=" + window.localStorage.getItem("paoce_token")).then(response => {
+        this.userInfo = response.data;
+      });
     } else {
       this.userInfo = {
         username:''

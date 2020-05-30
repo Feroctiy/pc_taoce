@@ -4,7 +4,7 @@
 			<div class="header_wrap fix_header bg-blue">
 				<section class="header_content main_width clear_fix">
 					<a href="/" target="_parent" class="logo_img">
-						<!-- <img src="@/assets/log.png" alt="" width="100px" class="f_left"> -->
+						<img src="@/assets/logo/logo.png" alt="" width="100px" class="f_left">
 					</a>
 					<div class="global_nav">
 						<div style="width:500px;margin-left:50px;margin-top:5px;">
@@ -14,20 +14,14 @@
 						</div>
 					</div>
 					<ul style="text-align: right;line-height: 60px;" id="navList">
-						<router-link to="/customer">
-							<span>{{userInfo.username}}</span>
-						</router-link>
-						<router-link to="/">
-							<span>返回首页</span>
-						</router-link>
-						<!-- <router-link to="/login"> -->
-						<span @click="loginout">退出</span>
-						<!-- </router-link> -->
+						<router-link to="/customer"> <span>{{userInfo.username}}</span> </router-link>
+						<router-link to="/"> <span>返回首页</span> </router-link> 
+						<span @click="loginout">退出</span> 
 					</ul>
 				</section>
 			</div>
 		</div>
-		<el-container style="height:auto; border: 1px solid #eee">
+		<el-container style="height:auto;">
 			<el-aside width="200px">
 				<el-menu :default-openeds="['1', '2','3']" router>
 					<el-submenu index="1">
@@ -44,13 +38,13 @@
 						<el-menu-item index="/authentication">用户认证</el-menu-item>
 						<el-menu-item index="/address">地址库</el-menu-item>
 						<el-menu-item index="/invoice">发票薄</el-menu-item>
-						<el-menu-item index="/order">修改密码</el-menu-item>
+						<el-menu-item index="/updatePwd">修改密码</el-menu-item>
 						<el-menu-item index="/message">我的消息</el-menu-item>
 						<el-menu-item index="/buyData">买家大数据</el-menu-item>
-						<el-menu-item index="/buyData">我的问答</el-menu-item>
-						<el-menu-item index="/buyData">我的关注</el-menu-item>
-						<el-menu-item index="/buyData">反馈意见</el-menu-item>
-						<el-menu-item index="/buyData">我的收藏</el-menu-item>
+						<el-menu-item index="/myQA">我的问答</el-menu-item>
+						<el-menu-item index="/myForce">我的关注</el-menu-item>
+						<el-menu-item index="/feedback">反馈意见</el-menu-item>
+						<el-menu-item index="/collection">我的收藏</el-menu-item>
 					</el-submenu>
 				</el-menu>
 			</el-aside>
@@ -108,10 +102,6 @@ export default {
 
 .el-aside {
   color: #333;
-}
-
-.el-menu {
-  height: 100%;
 }
 .el-submenu__title {
   font-size: 18px;

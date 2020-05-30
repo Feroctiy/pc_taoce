@@ -1,5 +1,5 @@
 <template>
-	<div class="main_width" style="padding:0 10px;box-sizing: border-box;overflow: auto;">
+	<div class="main_width customer" style="padding:0 10px;box-sizing: border-box;overflow: auto;">
 		<div class="user_rt_cont gl2-user_rt_cont wddd_d gl2-wddd_d">
 			<div class="top_title wddd_xx gl2-wddd_xx">
 				<strong>用户信息</strong>
@@ -18,7 +18,7 @@
 				</el-form-item>
 			</el-form>
 		</div>
-		<div class="margin-top bg-white">
+		<div class="bg-white padding">
 			<template>
 				<el-table :data="tableData" border="" style="width: 100%">
 					<el-table-column prop="date" label="统一社会信用代码" width="180"></el-table-column>
@@ -46,7 +46,9 @@ export default {
   }
 };
 </script>
-
+<style>
+@import "../../style/customer.css";
+</style>
 <style>
 .el-header {
   color: #333;

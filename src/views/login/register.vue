@@ -1,13 +1,13 @@
 <template>
-    <div id="register">
+    <div id="register" class="login-contain">
         <div class="dl_td">
             <div class="dl_zn">
-                <a href="/">
-                    <!-- <img src="@/assets/logo.png" width="161" height="39" alt=""> -->
-                </a>
+                <a href="/"> <img src="@/assets/logo/logo1.png" width="161" height="39" alt=""> </a>
                 <div class="descs">欢迎注册</div>
                 <a href="/" class="dl_zn_f">返回首页</a>
-                <a href="login" class="dl_zn_f" style="margin-right:20px">前往登录</a>
+                <router-link to="/login" class="dl_zn_f" style="margin-right:20px">
+                 前往登录
+                </router-link>
             </div>
         </div>
         <section class="zhuc_zx" style="min-height:500px">
@@ -20,17 +20,8 @@
                 </el-form-item>
                 <el-form-item label="验证码">
                     <el-input v-model="form.code" placeholder="请输入验证码" style="width: 170px;"></el-input>
-                    <el-button
-                        type="primary"
-                        style="display:inline-block;float: right;"
-                        @click="getCode"
-                        v-show="show"
-                    >获取验证码</el-button>
-                    <el-button
-                        type="primary"
-                        style="display:inline-block;float: right;"
-                        v-show="!show"
-                    >{{sum}}s重新发送</el-button>
+                    <el-button type="primary" style="display:inline-block;float: right;" @click="getCode" v-show="show" >获取验证码</el-button>
+                    <el-button type="primary" style="display:inline-block;float: right;" v-show="!show" >{{sum}}s重新发送</el-button>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="danger" @click="onSubmit" style="width:100%;">注册</el-button>

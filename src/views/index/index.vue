@@ -71,10 +71,7 @@
         </el-row>
       </div>
     </div>
-    <div
-      class="container main_home max_width main main_width max_width"
-      style="background: #ebebeb;"
-    >
+    <div class="container main_home max_width main main_width max_width" style="background:#f5f5f5">
       <div class="cu-bar justify-center text-center margin">
         <div class="action border-title">
           <span class="text-xl text-bold">检测机构</span>
@@ -246,8 +243,26 @@ export default {
     });
 
     this.getGoodList();
+    this.getAgentList();
   },
   methods: {
+    // 代理商列表
+    getAgentList(){
+      this.$fetch("/api/user/agentList",{ limit:"10", page:'1' }).then(response => {
+        console.log(response);
+      });
+    },
+
+
+
+
+
+
+
+
+
+
+
     selectStyle(id, index) {
       this.dow = true;
       this.oneid = id;

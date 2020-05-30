@@ -2,7 +2,7 @@
     <div class="main_width" style="padding-left:10px;box-sizing: border-box;overflow: auto;">
         <div class="user_rt_cont gl2-user_rt_cont wddd_d gl2-wddd_d">
         <div class="top_title wddd_xx gl2-wddd_xx">
-            <strong>我的消息</strong>
+            <strong>我的问答</strong>
         </div>
         </div>
         <div class="bg-white padding"> 

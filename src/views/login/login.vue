@@ -1,23 +1,19 @@
 <template>
-  <div id="register">
+  <div id="login" class="login-contain">
+    <!-- 头部 -->
     <div class="dl_td">
       <div class="dl_zn">
-        <a href="/">
-          <!-- <img src="@/assets/logo.png" width="161" height="39" alt=""> -->
-        </a>
-        <div class="descs">欢迎登录</div>
+        <div>
+          <a href="/"> <img src="@/assets/logo/logo1.png" width="161" height="39" alt=""> </a>
+          <span class="descs">欢迎登录</span>
+        </div>
         <a href="/" class="dl_zn_f">返回首页</a>
       </div>
     </div>
+    <!--  -->
     <div class="dl_con">
       <div class="dl_yh">
-        <img
-          src="http://zljweb.com/images/log_bj_y.png"
-          width="457"
-          height="392"
-          alt=""
-          class="dl_bjs"
-        >
+        <img src="http://zljweb.com/images/log_bj_y.png" width="457" height="392" alt="" class="dl_bjs" >
         <div class="yh_k">
           <div class="yh_dl">委托用户登录</div>
           <el-tabs v-model="activeName" @tab-click="handleClick" stretch>
@@ -59,6 +55,11 @@
               </el-form>
             </el-tab-pane>
           </el-tabs>
+          <div class="padding-right text-right">
+            还没有账户？<router-link to="/register">
+              <span class="padding-right">去注册</span>
+            </router-link>
+          </div>
         </div>
       </div>
     </div>
@@ -134,15 +135,10 @@ export default {
         if (response.code == 0) {
           window.localStorage.setItem("paoce_token", response.data.token);
           this.$router.push({ path: "/" });
+        }else{
+          this.$message.error(response.message);
         }
       });
-
-      //         {
-      //   "code": "string",
-      //   "isagree": "string",
-      //   "mobile": "string",
-      //   "username": "string"
-      // }
     },
     login() {
       if (isEmpty(this.form.username)) {
@@ -175,94 +171,5 @@ export default {
 };
 </script> 
 <style scoped>
-#register .dl_td {
-  width: 100%;
-  height: 89px;
-  overflow: hidden;
-  background-color: #025ab4;
-}
-#register .dl_td .dl_zn {
-  width: 1190px;
-  height: 89px;
-  margin: 0 auto;
-  position: relative;
-}
-#register .dl_td .dl_zn img {
-  margin-top: 22px;
-}
-#register .descs {
-  font-size: 18px;
-  line-height: 34px;
-  border-left: 1px solid #ccc;
-  position: absolute;
-  left: 200px;
-  top: 28px;
-  padding-left: 20px;
-  font-weight: bold;
-  color: #fff;
-}
-#register .dl_zn_f {
-  float: right;
-  line-height: 92px;
-  font-size: 14px;
-  color: #bbd5ea;
-}
-.zhuc_zx {
-  position: relative;
-  background: white;
-  width: 1200px;
-  margin: 30px auto;
-  overflow: hidden;
-  padding-bottom: 6%;
-}
-.biao_d {
-  /* width: 400px; */
-  margin: auto;
-  /* margin-top: 30px; */
-}
-.biao_d_login {
-  width: 330px;
-}
-
-.dl_con {
-  width: 100%;
-  height: 686px;
-  background: #aed5f7;
-}
-.dl_yh {
-  width: 1190px;
-  margin: 0 auto;
-}
-.dl_yh .dl_bjs {
-  margin: 76px 0 0 54px;
-}
-.yh_k {
-  width: 400px;
-  height: 386px;
-  background: #fff;
-  float: right;
-  margin-top: 94px;
-}
-.yh_dl {
-  width: 100%;
-  height: 50px;
-  border-bottom: 1px solid #eee;
-  font-size: 21px;
-  font-weight: bold;
-  line-height: 50px;
-  text-indent: 26px;
-}
-.el-tabs__item {
-  padding: 0 20px;
-  height: 50px;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  line-height: 50px;
-  display: inline-block;
-  list-style: none;
-  font-size: 18px;
-  font-weight: 500;
-  color: #303133;
-  position: relative;
-}
+@import "../../style/login.css";
 </style>

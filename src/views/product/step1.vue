@@ -1,7 +1,5 @@
-
-
 <template>
-  <div class="main_width">
+  <div class="main_width stepBox">
     <el-card class="box-card margin-bottom">
       <div slot="header" class="clearfix">
         <span class="tit">订单服务流程</span>
@@ -26,76 +24,36 @@
         <ul class="shqrm_c" id="ulSampleMain">
           <ul id="ulSampleTypeOne">
             <li class="xiangq_ju">
-              <span class="shenqrxq_bt">
-                样品名称
-                <span class="weit_xhx">*</span>
-              </span>
-              <el-input
-                v-model="param.ypmc"
-                placeholder="请输入样品名称"
-                class="container_input required"
-                maxlength="50"
-              ></el-input>
+              <span class="shenqrxq_bt">样品名称<span class="weit_xhx">*</span></span>
+              <el-input v-model="param.ypmc" placeholder="请输入样品名称" class="container_input required" maxlength="50" ></el-input>
             </li>
             <li class="xiangq_ju">
               <span class="shenqrxq_bt">样品英文名称</span>
-              <el-input
-                v-model="param.ypenmc"
-                placeholder="请输入样品英文名称"
-                class="container_input required"
-                maxlength="50"
-              ></el-input>
+              <el-input v-model="param.ypenmc" placeholder="请输入样品英文名称" class="container_input required" maxlength="50"></el-input>
             </li>
             <li class="xiangq_ju">
-              <span class="shenqrxq_bt">
-                样品数量
-                <span class="weit_xhx">*</span>
+              <span class="shenqrxq_bt">样品数量<span class="weit_xhx">*</span>
               </span>
-              <el-input
-                v-model="param.ypsl"
-                placeholder="请输入样品数量"
-                class="container_input required"
-                maxlength="50"
-              ></el-input>
+              <el-input v-model="param.ypsl" placeholder="请输入样品数量" class="container_input required" maxlength="50"></el-input>
             </li>
             <li class="xiangq_ju">
               <span class="shenqrxq_bt">样品商标</span>
-              <el-input
-                v-model="param.ypsbmc"
-                placeholder="如为图片等格式，可以附件形式上传"
-                class="container_input required"
-                maxlength="50"
-              ></el-input>
+              <el-input v-model="param.ypsbmc" placeholder="如为图片等格式，可以附件形式上传" class="container_input required" maxlength="50"></el-input>
             </li>
             <li class="xiangq_ju">
               <span class="shenqrxq_bt">保密要求</span>
               <el-select v-model="param.ypbmyq" placeholder="请选择">
-                <el-option
-                  v-for="item in ypbmyqList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
+                <el-option v-for="item in ypbmyqList" :key="item.value" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </li>
             <li class="xiangq_ju">
               <span class="shenqrxq_bt">型号规格</span>
-              <el-input
-                v-model="param.ypxhgg"
-                placeholder="请输入型号规格"
-                class="container_input required"
-                maxlength="50"
-              ></el-input>
+              <el-input v-model="param.ypxhgg" placeholder="请输入型号规格" class="container_input required" maxlength="50" ></el-input>
             </li>
             <li class="xiangq_ju">
               <span class="shenqrxq_bt">样品退还方式</span>
               <el-select v-model="param.ypthfs" placeholder="请选择">
-                <el-option
-                  v-for="item in ypthfsList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
+                <el-option v-for="item in ypthfsList" :key="item.value" :label="item.label" :value="item.value" ></el-option>
               </el-select>
             </li>
           </ul>
@@ -122,13 +80,7 @@
         <span class="tit">检测项目</span>
       </div>
       <div>
-        <el-table
-          ref="multipleTable"
-          :data="goodsDetail.goodsCheckitemEntityList"
-          tooltip-effect="dark"
-          style="width: 100%"
-          @selection-change="handleSelectionChange"
-        >
+        <el-table ref="multipleTable" :data="goodsDetail.goodsCheckitemEntityList" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column label="项目名称" prop="capabilityLibEntity.jcxm"></el-table-column>
           <el-table-column prop="capabilityLibEntity.bzhmc" label="检测标准"></el-table-column>
@@ -139,22 +91,12 @@
         <span class="shenqrxq_bt">需要沟通的其他内容</span>
         <el-input
           placeholder="请详细描述您的检测需求，方便客服根据您的需求进行确认，最长可输入200字，如备注内容较多可附件形式上传"
-          class="container_input required"
-          maxlength="200"
-        ></el-input>
+          class="container_input required" maxlength="200" v-model="param.xygtnr"></el-input>
       </div>
       <div class="shqrm_c">
         <li class="xiangq_ju gl2-xiangq_ju-fu" style="width: 90%;">
           <span class="shenqrxq_bt gl2-shenq-fujian">附件</span>
-          <el-upload
-          style="display: inline;"
-            class="upload-demo"
-            multiple
-            :action="uploadUrl"
-            :show-file-list="false"
-            :on-success="handleAvatarSuccess"
-            :file-list="fileList"
-          >
+          <el-upload style="display: inline;" class="upload-demo" multiple :limit="1" :action="uploadUrl" :show-file-list="true"  :on-success="handleAvatarSuccess" :file-list="fileList">
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip" style="width: 800px;">提示：请上传小于4M的并带有公章的授权委托书（单位介绍信）附件（图片或PDF）</div>
           </el-upload>
@@ -170,16 +112,10 @@
       </div>
     </el-card>
     <el-card class="box-card margin-bottom">
-      <div slot="header" class="clearfix">
-        <span class="tit">接样实验室</span>
-      </div>
+      <div slot="header" class="clearfix"> <span class="tit">接样实验室</span> </div>
       <div>
         <el-radio-group v-model="param.libid">
-          <el-radio-button
-            v-for="item in goodsDetail.receivingSampleLibEntityList"
-            :key="item.id"
-            :label="item.id"
-          >{{item.mc}}</el-radio-button>
+          <el-radio-button v-for="item in goodsDetail.receivingSampleLibEntityList" :key="item.id" :label="item.id" >{{item.mc}}</el-radio-button>
         </el-radio-group>
       </div>
       <div style="line-height:35px;"><el-link type="warning" :underline="false">{{receivingAddress}}</el-link></div>
@@ -196,68 +132,59 @@
         </el-radio-group>
       </div>
       <div class="margin-top" v-if="param.isFp == '1'">
-        <el-button type="primary" size="small" class="margin-left">选择发票+</el-button>
-        <el-button type="primary" size="small" class="margin-left">新增发票+</el-button>
-        <ul class="shqrm_c" id="ulSampleMain">
-          <ul>
+        <el-button type="primary" size="small" class="margin-left" v-if="invoiceList.length > 0" @click="optInvoice">选择发票+</el-button>
+        <el-button type="primary" size="small" class="margin-left" @click="addInvoice">新增发票+</el-button>
+        <ul class="shqrm_c">
             <li class="xiangq_ju">
-              <span class="shenqrxq_bt">
-                发票抬头
-                <span class="weit_xhx">*</span>
-              </span>
-              <el-input placeholder="请输入发票抬头" class="container_input required" maxlength="50"></el-input>
+              <span class="shenqrxq_bt"> 发票抬头 <span class="weit_xhx">*</span> </span>
+              <el-input placeholder="请输入发票抬头" class="container_input required" v-model="param.fptt"></el-input>
             </li>
             <li class="xiangq_ju">
-              <span class="shenqrxq_bt">
-                纳税人识别号
-                <span class="weit_xhx">*</span>
-              </span>
-              <el-input placeholder="请输入纳税人识别号" class="container_input required" maxlength="50"></el-input>
+              <span class="shenqrxq_bt"> 纳税人识别号 <span class="weit_xhx">*</span> </span>
+              <el-input placeholder="请输入纳税人识别号" class="container_input required" v-model="param.nsrsbh"></el-input>
             </li>
             <li class="xiangq_ju">
-              <span class="shenqrxq_bt">发票类型</span>
-              <el-input placeholder="发票类型" class="container_input required" maxlength="50"></el-input>
+              <span class="shenqrxq_bt">发票类型 <span class="weit_xhx">*</span></span>
+              <el-radio v-model="param.fplx" label="1">专用发票</el-radio>
+              <el-radio v-model="param.fplx" label="2">普通发票</el-radio>
             </li>
             <li class="xiangq_ju">
-              <span class="shenqrxq_bt">注册地址</span>
-              <el-input placeholder="请输入注册地址" class="container_input required" maxlength="50"></el-input>
+              <span class="shenqrxq_bt">注册地址 <span class="weit_xhx">*</span></span>
+              <el-input placeholder="请输入注册地址" class="container_input required" v-model="param.dwzcdz"></el-input>
             </li>
             <li class="xiangq_ju">
-              <span class="shenqrxq_bt">开户银行</span>
-              <el-input placeholder="请输入开户银行" class="container_input required" maxlength="50"></el-input>
+              <span class="shenqrxq_bt">开户银行 <span class="weit_xhx">*</span></span>
+              <el-input placeholder="请输入开户银行" class="container_input required" v-model="param.dwkhyh"></el-input>
             </li>
             <li class="xiangq_ju">
-              <span class="shenqrxq_bt">银行账户</span>
-              <el-input placeholder="请输入银行账户" class="container_input required" maxlength="50"></el-input>
+              <span class="shenqrxq_bt">银行账户 <span class="weit_xhx">*</span></span>
+              <el-input placeholder="请输入银行账户" class="container_input required" v-model="param.dwyhzh"></el-input>
             </li>
             <li class="xiangq_ju">
-              <span class="shenqrxq_bt">注册电话号码</span>
-              <el-input placeholder="请输入注册电话号码" class="container_input required" maxlength="50"></el-input>
+              <span class="shenqrxq_bt">注册电话号码 <span class="weit_xhx">*</span></span>
+              <el-input placeholder="请输入注册电话号码" class="container_input required" v-model="param.dwzcdh"></el-input>
             </li>
-          </ul>
         </ul>
         <div class="xiangq_ju" style="border-bottom: none;">
           <span class="shenqrxq_bt">
-            报告邮寄地址
+            发票邮寄地址
             <span class="weit_xhx">*</span>
           </span>
           <el-card class="box-card" shadow="never" id="address-box">
-            <div v-for="o in 4" :key="o" class="text item">
-              <el-radio v-model="radio1" :label="o">{{'上海市沪太路1111号 ' + o }}</el-radio>
-            </div>
+              <div v-for="item in addressList" :key="item.id" class="text item">
+                  <el-radio v-model="param.fpaddrId" :label="item.id">{{item.address }}</el-radio>
+              </div>
           </el-card>
           <div style="margin-top: 15px;">
             <el-button type="primary" size="small" class="margin-left" @click="addAddress">新增地址+</el-button>
-            <el-button type="primary" size="small" class="margin-left">更多地址</el-button>
+            <el-button type="primary" size="small" class="margin-left" v-if="addressList.length > 1">更多地址</el-button>
           </div>
         </div>
       </div>
     </el-card>
     <el-card class="box-card margin-bottom">
       <div class="info">
-        已选择
-        <span>{{ multipleSelection.length }}</span>
-        项服务 价格:
+        已选择 <span>{{ multipleSelection.length }}</span> 项服务 价格:
         <span v-if="!checked && goodsDetail.goodsCheckitemEntityList.length == multipleSelection.length">￥{{goodsDetail.goodsPrice}}</span>
         <span v-else-if="checked  && goodsDetail.goodsCheckitemEntityList.length == multipleSelection.length ">￥{{goodsDetail.goodsPrice + goodsDetail.jjjg}}</span>
         <span v-else>待预估</span>
@@ -279,11 +206,15 @@
 
 <script>
 import addAddress from "../template/add-address";
+import addOrUpdateInvoice from "../template/add-or-update-invoice";
+import invoiceList from "../template/invoice-list";
 export default {
-  components: { addAddress },
+  components: { addAddress,addOrUpdateInvoice,invoiceList },
   name: "Sort",
   data() {
     return {
+      invoiceList:[],
+      addressList:[],
       uploadUrl: "/apis/api/tools/uploadImg",
       fileList:[],
       param: {
@@ -384,6 +315,8 @@ export default {
   },
   mounted() {},
   created() {
+    this.getAddressList();
+    this.getInvoiceList();
     var goodsDetail = JSON.parse(
       window.localStorage.getItem("paoce_token-detail")
     );
@@ -396,6 +329,35 @@ export default {
     this.receivingAddress = this.goodsDetail.receivingSampleLibEntityList[0].addr;
   },
   methods: {
+     // 发票列表
+    getInvoiceList(){
+      var _this = this;
+      this.$fetch("/api/user/userInvoiceInfoList").then(response => { 
+        _this.listLoading = false;
+        if (response.code == 0) {
+          _this.invoiceList = response.data;
+        }
+      });
+    },
+    // 获取地址列表
+    getAddressList() {
+      var _this = this;
+      this.$fetch("/api/user/userConsigneeAddressList").then(response => {
+        if (response.code == 0) {
+          _this.addressList = response.data;
+          _this.param.bgaddrId = response.data[0].id;
+          _this.param.fpaddrId = response.data[0].id;
+        }
+      });
+    },
+    addInvoice(){
+      this.status = true;
+      this.$nextTick(() => { this.$refs.invoic.init(); });
+    },
+    optInvoice(){
+      this.optInvoiceStatus = true;
+      this.$nextTick(() => { this.$refs.invoicelist.init(); });
+    },
     agreeChange(e) {},
     next() {
       if (this.active++ > 6) this.active = 0;
@@ -444,7 +406,10 @@ export default {
 };
 </script>
 <style>
-.xiangq_ju .el-input__inner {
+@import "../../style/step.css";
+</style>
+<style>
+/* .xiangq_ju .el-input__inner {
   border: none;
 }
 .shqrm_c td {
@@ -458,7 +423,7 @@ export default {
 }
 
 .container_input {
-  width: 70% !important;
+  width: 70%;
   height: 38px;
   border: 0;
 }
@@ -559,24 +524,18 @@ export default {
   padding-left: 15px;
   border-bottom: 1px solid #f1f1f1;
 }
-.info {
-  font-size: 20px;
-}
-.info span {
-  color: #fe6603;
-  font-size: 23px;
-}
+ */
 </style>
 
 
 <style scoped>
-.el-radio-button__inner {
+/* .el-radio-button__inner {
   border-left: 1px solid #dcdfe6;
   border-radius: 4px;
 }
 .el-radio-button:last-child .el-radio-button__inner {
   border-radius: 4px;
-}
+} */
 </style>
 
  

@@ -1,10 +1,10 @@
  
 <template>
-    <el-dialog :close-on-click-modal="true" :visible.sync="visible" :title="添加发票">
+    <el-dialog :close-on-click-modal="true" :visible.sync="visible" :title="form.id ? '修改发票': '添加发票'">
         <div>
-            <el-form :model="form" :rules="rules" style="width:400px;">
+            <el-form :model="form" :rules="rules"  ref="form" style="width:400px;">
                 <el-form-item label="发票抬头" :label-width="formLabelWidth" prop="fptt">
-                    <el-input v-model="form.consignee" autocomplete="off" placeholder="请输入发票抬头"></el-input>
+                    <el-input v-model="form.fptt" autocomplete="off" placeholder="请输入发票抬头"></el-input>
                 </el-form-item>
                 <el-form-item label="发票类型" :label-width="formLabelWidth" prop="fplx">
                     <el-radio v-model="form.fplx" label="1">专用发票</el-radio>
@@ -46,35 +46,55 @@ export default {
       visible: false,
       isLoading: false,
       dataList: [],
-      form: {},
+      form: {
+        fplx:'1'
+      },
       formLabelWidth: "120px",
       options: [],
       rules: {
-        consignee: [ { required: true, message: "请输入收件人", trigger: "blur" }],
-        phone: [{ required: true, message: "请输入联系方式", trigger: "blur" }],
-        value: [{ required: true, message: "请选择行政区域", trigger: "blur" }]
+        fptt: [ { required: true, message: "请输入发票抬头", trigger: "blur" }],
+        nsrsbh: [{ required: true, message: "请输入纳税人识别号", trigger: "blur" }],
+        dwzcdz: [{ required: true, message: "请输入注册地址", trigger: "blur" }],
+        dwkhyh: [{ required: true, message: "请输入开户银行", trigger: "blur" }],
+        dwyhzh: [{ required: true, message: "请输入银行账户", trigger: "blur" }],
+        dwzclxr: [{ required: true, message: "请输入注册联系人", trigger: "blur" }],
+        dwzcdh: [{ required: true, message: "请输入注册电话号码", trigger: "blur" }]
       }
     };
   },
   created() {},
   methods: {
+    init(item) {
+      this.visible = true;
+      this.$nextTick(() => {
+        if(item){
+          var obj = JSON.parse(JSON.stringify(item));
+          this.form = obj;
+        }else{
+          this.form = {}
+          this.form.fplx = '1'
+        }
+        
+      });
+    },
     // 确认提交
     handle() {
-      // /api/user/addUserConsigneeAddress
       var _this = this;
-      this.$post("/api/user/addUserConsigneeAddress", {
-        address: _this.form.address,
-        city: _this.form.value[1],
-        companyName: _this.form.companyName,
-        consignee: _this.form.consignee,
-        district: _this.form.value[2],
-        phone: _this.form.phone,
-        province: _this.form.value[0],
-        token: window.localStorage.getItem("paoce_token")
-      }).then(response => {
-        this.visible = false;
-        this.$emit("refreshDataList");
-      });
+      this.$refs['form'].validate((valid) => {
+          if (valid) {
+            this.$post(_this.form.id ? "/api/user/mdUserInvoiceInfo" : "/api/user/addUserInvoiceInfo", _this.form).then(response => {
+              if (response.code == 0) {
+                _this.visible = false;
+                _this.$emit("refreshDataList");
+              }else{
+                this.$message.error(response.msg);
+              }
+            });
+          } else {
+              console.log('error submit!!');
+              return false;
+          }
+      })
     }
   }
 };

@@ -1,7 +1,7 @@
 <template>
-  <div class="main_width" style="padding-left:10px;box-sizing: border-box;overflow: auto;">
-    <div class="user_rt_cont gl2-user_rt_cont wddd_d gl2-wddd_d">
-      <div class="top_title wddd_xx gl2-wddd_xx">
+   <div class="main_width customer">
+    <div class="gl2-wddd_d">
+      <div class="top_title">
         <strong>企业认证</strong>
       </div>
     </div>
@@ -15,13 +15,13 @@
         style="width:500px"
       >
         <el-form-item label="统一社会信用代码" prop="creditCode">
-          <el-input v-model="ruleForm.creditCode" placeholder="请输入真实姓名" maxlength="10"></el-input>
+          <el-input v-model="ruleForm.creditCode" placeholder="请输入统一社会信用代码" maxlength="50"></el-input>
         </el-form-item>
         <el-form-item label="企业名称" prop="dwmc">
-          <el-input v-model="ruleForm.dwmc" placeholder="请输入身份证号" maxlength="20"></el-input>
+          <el-input v-model="ruleForm.dwmc" placeholder="请输入企业名称" maxlength="100"></el-input>
         </el-form-item>
         <el-form-item label="法定代表人" prop="legalPerson">
-          <el-input v-model="ruleForm.legalPerson" placeholder="请输入身份证号" maxlength="20"></el-input>
+          <el-input v-model="ruleForm.legalPerson" placeholder="请输入法定代表人" maxlength="20"></el-input>
         </el-form-item>
         <el-form-item label="营业执照" prop="region">
           <el-upload
@@ -70,10 +70,9 @@ export default {
       },
       imageUrl: "",
       rules: {
-        trueName: [
-          { required: true, message: "请输入真实姓名", trigger: "blur" }
-        ],
-        idNo: [{ required: true, message: "请选择身份证号", trigger: "blur" }]
+        creditCode: [{ required: true, message: "请输入统一社会信用代码",trigger: "blur"}],
+        dwmc: [{ required: true, message: "请输入企业名称", trigger: "blur" }],
+        legalPerson: [{ required: true, message: "请输入法定代表人", trigger: "blur" }]
       }
     };
   },
@@ -88,6 +87,7 @@ export default {
             this.ruleForm
           ).then(response => {
             console.log(response);
+            this.$router.go(-1);
           });
         } else {
           console.log("error submit!!");
@@ -97,6 +97,8 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+      this.$router.go(-1);
+    
     },
     handleAvatarSuccess(res, file){
       console.log(res,file);
@@ -149,5 +151,8 @@ export default {
   height: 178px;
   display: block;
 }
+</style>
+<style>
+@import "../../../style/customer.css";
 </style>
 

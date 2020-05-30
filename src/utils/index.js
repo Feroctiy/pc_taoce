@@ -15,3 +15,8 @@ export function isEmpty(obj) {
     }
     return false
 }
+export function starPhone(phoneNum){
+    let str =  String(phoneNum),
+    strLen = str.slice(-8,-2);
+    return str.replace(strLen,"******");
+ }
