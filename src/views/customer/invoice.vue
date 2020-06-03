@@ -1,17 +1,20 @@
 <template>
-  <div class="main_width" style="padding-left:10px;box-sizing: border-box;overflow: auto;">
-    <div class="user_rt_cont gl2-user_rt_cont wddd_d gl2-wddd_d">
-      <div class="top_title wddd_xx gl2-wddd_xx">
+  <div class="main_width customer">
+    <div class="gl2-wddd_d">
+      <div class="top_title">
         <strong>发票簿</strong>
       </div>
     </div>
     <div class="bg-white padding">
       <el-button type="primary" size="small" class="margin-bottom" @click="addOrUpdate()">添加+</el-button>
-      <el-table :data="list" style="width: 100%" stripe border v-loading="listLoading">
+      <el-table :data="list" style="width: 100%" stripe border="" v-loading="listLoading">
         <el-table-column label="序号" type="index" align="center" width="80"></el-table-column>
         <el-table-column prop="fptt" label="发票抬头" align="center">
           <template slot-scope="scope">
-            <span v-if="scope.row.isDefault == '1'"><el-tag effect="dark" size="small" style="margin-right:5px;">默认</el-tag>{{scope.row.fptt}}</span>
+            <span v-if="scope.row.isDefault == '1'">
+              <el-tag effect="dark" size="small" style="margin-right:5px;">默认</el-tag>
+              {{scope.row.fptt}}
+            </span>
             <span v-if="scope.row.isDefault == '0'">{{scope.row.fptt}}</span>
           </template>
         </el-table-column>
@@ -23,13 +26,13 @@
           </template>
         </el-table-column>
         <el-table-column prop="address" label="操作" align="center">
-          <template slot-scope="scope"> 
+          <template slot-scope="scope">
             <el-button v-if="scope.row.isDefault == '0'" @click.native.prevent="handDefault(scope.row.id)" size="mini" type="info" >设为默认</el-button>
-            <el-button @click.native.prevent="addOrUpdate(scope.row)" size="mini" type="primary" >修改</el-button>
-            <el-button @click.native.prevent="deleteRow(scope.row.id)" size="mini"  type="danger" >删除</el-button>
+            <el-button @click.native.prevent="addOrUpdate(scope.row)" size="mini" type="primary">修改</el-button>
+            <el-button @click.native.prevent="deleteRow(scope.row.id)" size="mini" type="danger">删除</el-button>
           </template>
         </el-table-column>
-      </el-table> 
+      </el-table>
     </div>
     <!-- 新增或者编辑发票 -->
     <add-or-update-invoice v-if="status" ref="invoic" @refreshDataList="handleList"/>
@@ -43,19 +46,25 @@ export default {
     return {
       list: [],
       status: false,
-      listLoading:true
+      listLoading: true
     };
   },
   created() {
-	  this.handleList();
+    if (!window.localStorage.getItem("paoce_token")) {
+      this.$router.push({ path: "/login" });
+      return;
+    }
+    this.handleList();
   },
   methods: {
-    // 新增/修改地址
+    // 新增/修改发票
     addOrUpdate(item) {
       this.status = true;
-      this.$nextTick(() => { this.$refs.invoic.init(item); });
+      this.$nextTick(() => {
+        this.$refs.invoic.init(item);
+      });
     },
-    // 删除 /api/user/deleteUserConsigneeAddress
+    // 删除  
     deleteRow(id) {
       var _this = this;
       this.$confirm("此操作将永久删除该发票信息, 是否继续?", "提示", {
@@ -64,15 +73,21 @@ export default {
         type: "warning"
       })
         .then(() => {
-          this.$fetch("/api/user/deleteUserInvoiceInfo", { id: id}).then(response => { 
-            if (response.code == 0) {
-              _this.handleList();
+          this.$fetch("/api/user/deleteUserInvoiceInfo", { id: id }).then(
+            response => {
+              if (response.code == 0) {
+                _this.$message.success('操作成功');
+                _this.handleList();
+              } else {
+                _this.$message.error(response.msg);
+              }
             }
-          });
+          );
         })
-        .catch(() => { });
+        .catch(() => {});
     },
-    handDefault(id){
+    // 设为默认
+    handDefault(id) {
       var _this = this;
       this.$confirm("是否将该发票设为默认?", "提示", {
         confirmButtonText: "确定",
@@ -80,20 +95,28 @@ export default {
         type: "warning"
       })
         .then(() => {
-          this.$fetch("/api/user/defaultUserInvoiceInfo", { id: id}).then(response => { 
-            if (response.code == 0) {
-              _this.handleList();
+          this.$fetch("/api/user/defaultUserInvoiceInfo", { id: id }).then(
+            response => {
+              if (response.code == 0) {
+                _this.$message.success('已设为默认');
+                _this.handleList();
+              } else {
+                _this.$message.error(response.msg);
+              }
             }
-          });
+          );
         })
-        .catch(() => { });
+        .catch(() => {});
     },
+    // 发票列表
     handleList() {
       var _this = this;
-      this.$fetch("/api/user/userInvoiceInfoList").then(response => { 
+      this.$fetch("/api/user/userInvoiceInfoList").then(response => {
         _this.listLoading = false;
         if (response.code == 0) {
           _this.list = response.data;
+        } else {
+          _this.$message.error(response.msg);
         }
       });
     }
@@ -102,16 +125,5 @@ export default {
 </script>
 
 <style>
-.el-header {
-  color: #333;
-  line-height: 60px;
-}
-
-.el-aside {
-  color: #333;
-}
-
-.el-menu {
-  height: 100%;
-}
+@import "../../style/customer.css";
 </style>

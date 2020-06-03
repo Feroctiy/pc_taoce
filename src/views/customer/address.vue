@@ -1,13 +1,13 @@
 <template>
-  <div class="main_width" style="padding-left:10px;box-sizing: border-box;overflow: auto;">
-    <div class="user_rt_cont gl2-user_rt_cont wddd_d gl2-wddd_d">
-      <div class="top_title wddd_xx gl2-wddd_xx">
+  <div class="main_width customer">
+    <div class="gl2-wddd_d">
+      <div class="top_title">
         <strong>地址库</strong>
       </div>
     </div>
     <div class="bg-white padding">
-      <el-button type="primary" size="small" class="margin-bottom" @click="addOrUpdate">添加+</el-button>
-      <el-table :data="list" style="width: 100%" stripe border="">
+      <el-button type="primary" size="small" class="margin-bottom" @click="addOrUpdate()">添加+</el-button>
+      <el-table :data="list" style="width: 100%" stripe border v-loading="loading">
         <el-table-column label="序号" type="index" align="center" width="80"></el-table-column>
         <el-table-column prop="consignee" label="收件人" align="center">
           <template slot-scope="scope">
@@ -27,13 +27,10 @@
             <el-button @click.native.prevent="deleteRow(scope.row.id)" size="mini" type="danger">删除</el-button>
           </template>
         </el-table-column>
-      </el-table>
-      <!-- <div class="margin text-right">
-				<el-pagination background="" layout="prev, pager, next" :total="1000"></el-pagination>
-      </div>-->
+      </el-table> 
     </div>
     <!-- 新增或者编辑地址 -->
-    <add-address v-if="status" ref="addaddress"/>
+    <add-address v-if="status" ref="addaddress" @refreshDataList="handleList"/>
   </div>
 </template>
 <script>
@@ -41,18 +38,17 @@ import addAddress from "../template/add-address";
 export default {
   components: { addAddress },
   data() {
-    const item = {
-      date: "2016-05-02",
-      name: "王小虎",
-      address: "上海市普陀区金沙江路 1518 弄",
-      type: "专用发票"
-    };
     return {
-      list: Array(5).fill(item),
-      status: false
+      list: [],
+      status: false,
+      loading:true
     };
   },
   created() {
+    if (!window.localStorage.getItem("paoce_token")) {
+      this.$router.push({ path: "/login" });
+      return;
+    }
     this.handleList();
   },
   methods: {
@@ -75,18 +71,16 @@ export default {
           this.$fetch("/api/user/deleteUserConsigneeAddress", {
             id: id,
             token: window.localStorage.getItem("paoce_token")
-          }).then(response => {
-            console.log(response);
+          }).then(response => { 
             if (response.code == 0) {
               _this.handleList();
+            }else {
+              _this.$message.error(response.msg);
             }
           });
         })
         .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
+          _this.$message({ type: "info", message: "已取消删除" });
         });
     },
     handDefault(id){
@@ -100,6 +94,8 @@ export default {
           this.$fetch("/api/user/defaultUserConsigneeAddress", { id: id}).then(response => { 
             if (response.code == 0) {
               _this.handleList();
+            }else {
+              _this.$message.error(response.msg);
             }
           });
         })
@@ -107,13 +103,18 @@ export default {
     },
     handleList() {
       var _this = this;
-      this.$fetch("/api/user/userConsigneeAddressList").then(response => {
-        console.log(response);
+      this.$fetch("/api/user/userConsigneeAddressList").then(response => { 
+        _this.loading = false
         if (response.code == 0) {
           _this.list = response.data;
+        }else {
+          _this.$message.error(response.msg);
         }
       });
     }
   }
 };
 </script>
+<style>
+@import "../../style/customer.css";
+</style>

@@ -32,23 +32,30 @@
         </div>
         <span slot="footer" class="dialog-footer">
             <el-button @click="visible = false">取消</el-button>
-            <el-button type="primary" @click="handle">确认</el-button>
+            <el-button type="primary" @click="handle" :disabled="disabled">确认</el-button>
         </span>
     </el-dialog>
 </template>
 
 <script>
+import { validateAllMobile } from '@/utils/validate'
 export default {
   components: {},
   data() {
+    var mobileValidator = (rule, value, callback) => {
+        if (!validateAllMobile(value)) {
+            callback(new Error('请输入正确的注册电话号码'))
+        } else {
+            callback()
+        }
+    }
     return {
       value: [],
+      disabled:false,
       visible: false,
       isLoading: false,
       dataList: [],
-      form: {
-        fplx:'1'
-      },
+      form: { fplx:'1' },
       formLabelWidth: "120px",
       options: [],
       rules: {
@@ -58,7 +65,10 @@ export default {
         dwkhyh: [{ required: true, message: "请输入开户银行", trigger: "blur" }],
         dwyhzh: [{ required: true, message: "请输入银行账户", trigger: "blur" }],
         dwzclxr: [{ required: true, message: "请输入注册联系人", trigger: "blur" }],
-        dwzcdh: [{ required: true, message: "请输入注册电话号码", trigger: "blur" }]
+        dwzcdh: [
+          { required: true, message: "请输入注册电话号码", trigger: "blur" },
+          { validator: mobileValidator, trigger: 'blur' }
+        ]
       }
     };
   },
@@ -66,6 +76,7 @@ export default {
   methods: {
     init(item) {
       this.visible = true;
+      this.disabled = false;
       this.$nextTick(() => {
         if(item){
           var obj = JSON.parse(JSON.stringify(item));
@@ -73,26 +84,33 @@ export default {
         }else{
           this.form = {}
           this.form.fplx = '1'
-        }
-        
+          this.clearValidate('form')
+        } 
       });
+    },
+    clearValidate(formName) {
+      this.$refs[formName].clearValidate();
     },
     // 确认提交
     handle() {
       var _this = this;
       this.$refs['form'].validate((valid) => {
           if (valid) {
+            _this.disabled = true;
             this.$post(_this.form.id ? "/api/user/mdUserInvoiceInfo" : "/api/user/addUserInvoiceInfo", _this.form).then(response => {
-              if (response.code == 0) {
-                _this.visible = false;
-                _this.$emit("refreshDataList");
+              if (response.code == 0) { 
+                _this.$message({ message: _this.form.id ? '修改成功' :'添加成功', type: 'success', duration: 1500, onClose: () => { 
+                    _this.visible = false;
+                    _this.disabled = false;
+                    _this.$emit('refreshDataList') 
+                }})
               }else{
-                this.$message.error(response.msg);
+                _this.disabled = false;
+                _this.$message.error(response.msg);
               }
             });
-          } else {
-              console.log('error submit!!');
-              return false;
+          } else { 
+            return false;
           }
       })
     }
