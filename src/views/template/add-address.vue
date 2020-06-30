@@ -33,14 +33,14 @@
 </template>
 
 <script>
-import { validateMobile } from '@/utils/validate'
+import { validateAllMobile } from '@/utils/validate'
 import cityList from "@/utils/city.json";
 export default {
   components: {},
   data() {
     var mobileValidator = (rule, value, callback) => {
-      if (!validateMobile(value)) {
-        callback(new Error("手机号格式错误"));
+      if (!validateAllMobile(value)) {
+        callback(new Error("联系方式格式错误"));
       } else {
         callback();
       }
@@ -162,4 +162,4 @@ export default {
 }
 </style>
 
- 
+  

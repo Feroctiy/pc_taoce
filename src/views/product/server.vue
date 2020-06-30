@@ -14,11 +14,11 @@
     <div class="tzsb">
       <div class="tzsb-cc">
         <div class="jgzy">
-          <h3 :class=" type == '1' ? 'active':''" @click="goItem('1')" >
+          <h3 :class=" type == '1' ? 'active1':''" @click="goItem('1')" >
             <img src="@/assets/icon/zs-2.png">
             <p>资格证书 | 报告模版</p>
           </h3>
-          <h3 :class=" type == '2' ? 'active':''" @click="goItem('2')">
+          <h3 :class=" type == '2' ? 'active1':''" @click="goItem('2')">
             <img src="@/assets/icon/jg-2.png">
             <p>机构简介</p>
           </h3>

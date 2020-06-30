@@ -1,5 +1,5 @@
 <template>
-	<div class="main_width">
+	<div class="main_width" id="cus-main">
 		<div class="global_header love_0210 bg-blue">
 			<div class="header_wrap fix_header bg-blue">
 				<section class="header_content main_width clear_fix">
@@ -41,8 +41,8 @@
 						<el-menu-item index="/updatePwd">修改密码</el-menu-item>
 						<el-menu-item index="/message">我的消息</el-menu-item>
 						<el-menu-item index="/buyData">买家大数据</el-menu-item>
-						<el-menu-item index="/myQA">我的问答</el-menu-item>
-						<el-menu-item index="/myForce">我的关注</el-menu-item>
+						<!-- <el-menu-item index="/myQA">我的问答</el-menu-item>
+						<el-menu-item index="/myForce">我的关注</el-menu-item> -->
 						<el-menu-item index="/feedback">反馈意见</el-menu-item>
 						<el-menu-item index="/collection">我的收藏</el-menu-item>
 					</el-submenu>
@@ -95,15 +95,15 @@ export default {
 </script>
 
 <style>
-.el-header {
+#cus-main .el-header {
   color: #333;
   line-height: 60px;
 }
 
-.el-aside {
+#cus-main .el-aside {
   color: #333;
 }
-.el-submenu__title {
+#cus-main .el-submenu__title {
   font-size: 18px;
   color: blue;
   font-weight: 400;

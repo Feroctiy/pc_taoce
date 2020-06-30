@@ -72,7 +72,7 @@ export default {
         if (response.code == 0) {
           _this.userInfo = response.data;
         } else {
-          this.$message.error(response.msg);
+          _this.$message.error(response.msg);
         }
       });
     },

@@ -197,7 +197,7 @@
       </div>
     </el-card>
     <div style="overflow:auto;margin-bottom:30px;" class="bg-white">
-      <el-row :gutter="10">
+      <el-row :gutter="10" style="padding: 20px;margin:0">
         <el-col :span="5" v-for="(item,index) in goodsList" :key="index">
           <div class="text-center" @click="goDetail(item.goods_id,item.shopid)">
             <img :src="item.goods_img" alt="" style="height:200px;">

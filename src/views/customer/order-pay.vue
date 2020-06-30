@@ -122,26 +122,34 @@ export default {
     // 立即支付 /api/order/payOrder
     pay() {
       var _this = this;
-      this.$fetch(
-        "/api/order/payOrder?orderSn=" +
-          this.orderSn +
-          "&device=web&payType=" +
-          this.onLinePay,
-        {}
-      ).then(response => {
+      if(_this.payType == '1'){
+          this.$fetch( "/api/order/payOrder?orderSn=" + this.orderSn + "&device=web&payType=" + this.onLinePay,
+        {}).then(response => {
+          console.log(response);
+          if (_this.onLinePay == "2") {
+            _this.dialogVisible = true;
+            var codeUrl = response.data.codeUrl;
+            _this.codeUrl = codeUrl;
+          } else if (_this.onLinePay == "1") {
+            _this.html = response;
+            let routerData = this.$router.resolve({ path: "/payGateWay", query: { htmlData: response }});
+            // 打开新页面
+            window.open(routerData.href, "_blank");
+          }
+        });
+      }else if(_this.payType == '2'){
+        // 余额支付
+        this.balancePay();
+        
+      }
+      
+      
+    },
+    balancePay(){
+      this.$post("/api/order/balancePayCommonOrder?orderSn=" + this.orderSn, {}).then(response => {
         console.log(response);
-        if (_this.onLinePay == "2") {
-          _this.dialogVisible = true;
-          var codeUrl = response.data.codeUrl;
-          _this.codeUrl = codeUrl;
-        } else if (_this.onLinePay == "1") {
-          _this.html = response;
-          let routerData = this.$router.resolve({
-            path: "/payGateWay",
-            query: { htmlData: response }
-          });
-          // 打开新页面
-          window.open(routerData.href, "_blank");
+        if (response.code == 0) {
+          this.$router.go(-1)
         }
       });
     }

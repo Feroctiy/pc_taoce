@@ -3,8 +3,8 @@
     <div class="bg-white">
       <div class="main main_width">
         <el-row :gutter="0" style="position: relative;">
-          <el-col :span="4" style="background:#f1f1f1;" >
-            <div style="position: relative;" >
+          <el-col :span="4" style="background:#f1f1f1;">
+            <div style="position: relative;">
               <ul id="cart" @mouseover="dow = true" @mouseleave="dow = false">
                 <li
                   v-for="(item,index) in categoryList"
@@ -56,7 +56,7 @@
             </div>
           </el-col>
         </el-row>
-        <el-row :gutter="20" >
+        <el-row :gutter="20">
           <el-col :span="12">
             <div class="grid-content bg-purple" style="height:200px;">
               <img src="@/assets/99.png" alt="">
@@ -115,11 +115,6 @@
             <div class="text-center text-df" style="line-height:50px">中纺标检验认证股份有限公司</div>
           </div>
         </el-col>
-         
-         
-        
-        
-        
       </el-row>
     </div>
     <div class="bg-white">
@@ -137,49 +132,28 @@
                 </div>
               </div>
               <ul>
-                <li class="flex justify-start" style="margin-bottom:15px;padding-left:15px;">
+                <li
+                  class="flex justify-start"
+                  style="margin-bottom:15px;padding-left:15px;cursor: pointer;"
+                  v-for="(item,index) in newsList"
+                  :key="index"
+                  @click="goNewDetail(item.id)"
+                >
                   <div class="padding-right">
-                    <div class="text-xxl text-center">06</div>
-                    <div class="text-df">2020/05</div>
+                    <div class="text-xxl text-center">{{item.createTime.slice(8,10)}}</div>
+                    <div class="text-df">{{item.createTime.slice(0,7)}}</div>
                   </div>
                   <div>
-                    <div class="text-xxl">新 | 6月1日起，这类产品纳入CCC认证，未获证不得销售</div>
-                    <div class="text-df">2017年度法律风险防控会议</div>
+                    <div class="text-xl" style="line-height:50px;">{{item.title}}</div>
+                    <!-- <div class="text-df">2017年度法律风险防控会议</div> -->
                   </div>
                 </li>
-                <li class="flex justify-start" style="margin-bottom:15px;padding-left:15px;">
-                  <div class="padding-right">
-                    <div class="text-xxl text-center">20</div>
-                    <div class="text-df">2020/04</div>
-                  </div>
-                  <div>
-                    <div class="text-xxl">14项强制性国家标准发布</div>
-                    <div class="text-df">近日，国家市场监督管理总局、国家标准化管理委员会批准发布</div>
-                  </div>
-                </li>
-                <li class="flex justify-start" style="margin-bottom:15px;padding-left:15px;">
-                  <div class="padding-right">
-                    <div class="text-xxl text-center">17</div>
-                    <div class="text-df">2020/04</div>
-                  </div>
-                  <div>
-                    <div class="text-xxl">《“领跑者”标准 LED照明产品》团体标准研讨会召开</div>
-                    <div class="text-df">近日，由中国质量万里行促进会与企业标准“领跑者”联盟共同提出并归口</div>
-                  </div>
-                </li>
-                <li class="flex justify-start" style="margin-bottom:15px;padding-left:15px;">
-                  <div class="padding-right">
-                    <div class="text-xxl text-center">21</div>
-                    <div class="text-df">2020/04</div>
-                  </div>
-                  <div>
-                    <div class="text-xxl">国际组织应对疫情影响有新举措</div>
-                    <div class="text-df">联合国工业发展组织举行质量和标准抗击疫情研讨会</div>
-                  </div>
-                </li>
-                 
-                 
               </ul>
+              <div class="padding text-center">
+                <router-link to="news">
+                  <el-button type="primary">查看更多</el-button>
+                </router-link>
+              </div>
             </div>
           </el-col>
           <el-col :span="12">
@@ -195,23 +169,16 @@
               </div>
               <div style="background:#ebebeb;min-height:100px;padding:15px;">
                 <ul>
-                  <li>
-                    <div class="text-xl" style="line-height:45px;">口罩原料熔喷布需要检测报告吗？熔喷布检测要求哪些项目</div>
-                    <div id="img">
-                      <img src="https://jjjcn.oss-cn-beijing.aliyuncs.com/20200508/ba0e97de298c4f49bdffdcf3a2bd21a9.png" alt="">
-                      <img src="https://jjjcn.oss-cn-beijing.aliyuncs.com/20200508/ba0e97de298c4f49bdffdcf3a2bd21a9.png" alt="">
-                   
-                    </div>
-                  </li>
-                  <li>
-                    <div class="text-xl" style="line-height:45px;">医用护目镜检测标准汇总</div>
-                    <div id="img">
-                      <img src="@/assets/test/6.png" alt="">
-                      <!-- <img src="@/assets/2.png" alt="">
-                      <img src="@/assets/2.png" alt=""> -->
-                    </div>
+                  <li v-for="(item,index) in askList" :key="index" @click="goAskDetail(item.id)" style="cursor: pointer;">
+                    <div class="text-xl" style="line-height:45px;color:#409EFF;font-weight:400;">{{item.title}}</div>
+                    <div class="text-df">{{item.content}}</div>
                   </li>
                 </ul>
+                <div class="padding text-center">
+                  <router-link to="answer">
+                    <el-button type="primary">查看更多</el-button>
+                  </router-link>
+                </div>
               </div>
             </div>
           </el-col>
@@ -233,35 +200,72 @@ export default {
       dow: true,
       list: [],
       categoryList: [],
-      categoryTwoList: []
+      categoryTwoList: [],
+      newsList: [],
+      askList: []
     };
   },
   created() {
     this.dow = false;
-    this.$fetch("/api/category/oms/getIndexCategoryList").then(response => {
-      this.categoryList = response.data[0].categoryList;
-    });
+    if (window.sessionStorage.getItem("categoryList")) {
+      this.categoryList = JSON.parse(
+        window.sessionStorage.getItem("categoryList")
+      );
+    } else {
+      this.$fetch("/api/category/oms/getIndexCategoryList").then(response => {
+        this.categoryList = response.data[0].categoryList;
+        window.sessionStorage.setItem(
+          "categoryList",
+          JSON.stringify(this.categoryList)
+        );
+      });
+    }
 
     this.getGoodList();
     this.getAgentList();
+    this.getNewsList();
+    this.getAskList();
   },
   methods: {
-    // 代理商列表
-    getAgentList(){
-      this.$fetch("/api/user/agentList",{ limit:"10", page:'1' }).then(response => {
-        console.log(response);
+    // 新闻列表
+    getNewsList() {
+      var _this = this;
+      this.$fetch("/api/news/list", { limit: 4, page: 1 }).then(response => {
+        _this.loading = false;
+        if (response.code == 0) {
+          _this.newsList = response.data.records;
+        } else {
+          _this.$message.error(response.msg);
+        }
       });
     },
+    goNewDetail(id){
+      this.$router.push({ path: "/news-detail", query: { id: id } });
+    },
+    // 问答列表
+    getAskList() {
+      var _this = this;
+      this.$fetch("/api/ask/list", { limit: 4, page: 1 }).then(response => {
+        _this.loading = false;
+        if (response.code == 0) {
+          _this.askList = response.data.records;
+        } else {
+          _this.$message.error(response.msg);
+        }
+      });
+    },
+    goAskDetail(id){
+      this.$router.push({ path: "/ask-detail", query: { id: id } });
+    },
 
-
-
-
-
-
-
-
-
-
+    // 代理商列表
+    getAgentList() {
+      this.$fetch("/api/user/agentList", { limit: "10", page: "1" }).then(
+        response => {
+          console.log(response);
+        }
+      );
+    },
 
     selectStyle(id, index) {
       this.dow = true;
@@ -277,17 +281,23 @@ export default {
       console.log(this.oneid, this.twoid, this.threeid);
       this.$router.push({
         path: "/product",
-        query: { cateOne: this.oneid, cateTwo: this.twoid, cateThree: this.threeid }
+        query: {
+          cateOne: this.oneid,
+          cateTwo: this.twoid,
+          cateThree: this.threeid
+        }
       });
     },
     // 商品列表
     getGoodList() {
       var _this = this;
-      this.$post("/api/goods/goodsList", {}).then(response => {
-        if (response.code == 0) {
-          _this.list = response.data.records;
+      this.$post("/api/goods/goodsList", { limit: "15", page: "1" }).then(
+        response => {
+          if (response.code == 0) {
+            _this.list = response.data.records;
+          }
         }
-      });
+      );
     },
     goDetail(id, shopid) {
       this.$router.push({
@@ -341,11 +351,16 @@ export default {
   background-color: #f1f1f1;
 }
 #cart li {
-  padding: 10px 15px;
+  margin: 10px 15px;
   box-sizing: border-box;
   border-bottom: 1px solid #f1f1f1;
   font-size: 14px;
   cursor: pointer;
+  padding: 5px 10px;
+}
+#cart li:hover {
+  background: #ccc;
+  border-radius: 1px;
 }
 .menu-dow {
   position: absolute;

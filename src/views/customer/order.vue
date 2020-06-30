@@ -1,10 +1,20 @@
 <template>
-  <div class="main_width customer order" style="padding:0 10px;box-sizing: border-box;overflow: auto;">
-    <div class="gl2-wddd_d"><div class="top_title"><strong>我的订单</strong></div></div>
+  <div class="main_width customer order">
+    <div class="gl2-wddd_d">
+      <div class="top_title">
+        <strong>我的订单</strong>
+      </div>
+    </div>
     <div class="user_rt_cont">
       <div class="ddzt_xk clear_fix">
         <ul class="dd-zt">
-          <li :class="tag == item.tag ? 'ddxz_zt':''" v-for="item in tagList" :key="item.tag" :tag="item.tag" @click="goType(item.tag)">
+          <li
+            :class="tag == item.tag ? 'ddxz_zt':''"
+            v-for="item in tagList"
+            :key="item.tag"
+            :tag="item.tag"
+            @click="goType(item.tag)"
+          >
             {{item.name}}
             <i style="display: block;" v-if="item.num">{{item.num}}</i>
           </li>
@@ -13,28 +23,36 @@
           <el-button slot="append" size="small">查询</el-button>
         </el-input>
       </div>
-      <div id="divMain">
+      <div id="divMain" v-loading="loading">
         <ul class="order_li gl2-order_li" v-if="dataList.length > 0">
           <li v-for="item in dataList" :key="item.orderSn">
             <table class="order_table gl2-order_table">
               <caption>
                 <strong>{{item.addTime}}</strong>
-                <strong>订单编号：<em> <a class="ord_dd operate ord_dxq gl2-ord_dxq">{{item.orderSn}}</a> </em> </strong>
+                <strong>订单编号：
+                  <em>
+                    <a class="ord_dd operate ord_dxq gl2-ord_dxq">{{item.orderSn}}</a>
+                  </em>
+                </strong>
                 <div class="dpth_xx gl2-dpth_xx">
-                  <a class="ord_dd gl2-ord_dd-userimg gl2-logo-liname" style="max-width:300px;" >{{item.shopName}}</a>
+                  <a
+                    class="ord_dd gl2-ord_dd-userimg gl2-logo-liname"
+                    style="max-width:300px;"
+                  >{{item.shopName}}</a>
                 </div>
                 <a class="ord_dd operate ord_dxq gl2-ord_dxq" @click="godetail(item.orderId)">订单详情</a>
-                <a class="ord_dd operate ord_dxq gl2-ord_dxq">订单复制</a>
+                <a class="ord_dd operate ord_dxq gl2-ord_dxq" @click="orderCopy(item.orderId)">订单复制</a>
               </caption>
               <tbody>
                 <tr class="dd_wt">
                   <td class="center ord_gd gl2-center">
-                    <img :src="item.goodsImg" width="110px" height="110px">
+                    <img src="@/assets/logo/logo.png" alt="" v-if="!item.goodsImg" width="80px" height="80px">
+                    <img v-if="item.goodsImg" :src="item.goodsImg" width="80px" height="80px">
                   </td>
-                  <td class="qymc_dd gl2-companyname">{{item.goodsName}}</td>
+                  <td class="qymc_dd gl2-companyname">{{item.goodsName ? item.goodsName : "自定义委托订单" }}</td>
                   <td class="ord_bk_z gl2-ord_bk_z"></td>
                   <td class="ord_bk_z">
-                    <b class="ord_jg gl2-ord_jg">￥{{item.orderAmount}}</b>
+                    <b class="ord_jg gl2-ord_jg">{{item.orderAmount  != 0? '￥'+item.orderAmount : '待评估'}}</b>
                   </td>
                   <td class="ord_bk ord_bk_z">
                     <span class="ddzt_zt">{{getOrderStatus(item.orderStatus)}}</span>
@@ -58,12 +76,16 @@
                 </tr>
                 <tr class="tj_dd_a" v-if="item.orderStatus == '2'">
                   <td colspan="5" style="text-align: right;padding-right:15px">
-                    <span> <a class="a_btn operate mrxz" @click="gopay(item.orderId,item.orderSn)">去支付</a> </span>
+                    <span>
+                      <a class="a_btn operate mrxz" @click="gopay(item.orderId,item.orderSn)">去支付</a>
+                    </span>
                   </td>
                 </tr>
                 <tr class="tj_dd_a" v-if="item.orderStatus == '3'">
                   <td colspan="5" style="text-align: right;padding-right:15px">
-                    <span> <a class="a_btn operate mrxz">查看支付</a> </span>
+                    <span>
+                      <a class="a_btn operate mrxz">查看支付</a>
+                    </span>
                   </td>
                 </tr>
                 <tr class="tj_dd_a" v-if="item.orderStatus == '4'">
@@ -76,7 +98,9 @@
                 </tr>
                 <tr class="tj_dd_a" v-if="item.orderStatus == '5'">
                   <td colspan="5" style="text-align: right;padding-right:15px">
-                    <span> <a class="a_btn operate mrxz" @click="appraise(item.orderId,item.orderSn)">评价</a> </span>
+                    <span>
+                      <a class="a_btn operate mrxz" @click="appraise(item.orderId,item.orderSn)">评价</a>
+                    </span>
                   </td>
                 </tr>
               </tbody>
@@ -84,10 +108,10 @@
           </li>
         </ul>
         <div v-if="dataList.length > 0" style="text-align:right;">
-          <el-pagination background layout="prev, pager, next" :total="1000"> </el-pagination>
+          <el-pagination background="" layout="prev, pager, next" :total="total" @current-change="handleCurrentChange" ></el-pagination>
         </div>
         <div v-if="dataList.length == 0">
-            <div style="line-height:100px;font-size:15px;text-align:center">暂无数据</div>
+          <div style="line-height:100px;font-size:15px;text-align:center">暂无数据</div>
         </div>
       </div>
     </div>
@@ -127,6 +151,8 @@ export default {
   components: { samplesInfo },
   data() {
     return {
+      loading: true,
+
       tag: "", // 选中的订单type
       // typeList
       tagList: [
@@ -140,43 +166,39 @@ export default {
         { name: "已取消", tag: "7", num: "" }
       ],
       dataList: [],
-
-
-
-
-
-
-
-
       formLabelWidth: "100px",
       logisticsVisible: false,
       samplesStatus: false,
       appraiseVisible: false,
       appraiseform: {
-        id:'',
-        orderSn:'',
-        star:3
+        id: "",
+        orderSn: "",
+        star: 3
       },
-      
-      
+
       page: "1",
       limit: "10",
-      orderDetail:{}
+      total: null,
+      orderDetail: {}
     };
   },
   created() {
-    if( this.$route.query.type ){
+    if (this.$route.query.type) {
       this.tag = this.$route.query.type;
-      this.handleList( this.$route.query.type );
-    }else{
+      this.handleList(this.$route.query.type);
+    } else {
       this.handleList("");
     }
-    
   },
   methods: {
     // 订单详情
     godetail(orderId) {
       this.$router.push({ path: "/orderDetail", query: { orderId: orderId } });
+    },
+    orderCopy(orderId){
+      window.localStorage.removeItem("taoce-param");
+      window.localStorage.removeItem("paoce_token-detail");
+      this.$router.push({ path: "/step", query: { orderId: orderId } });
     },
     // 查看物流
     viewLogistics(orderId) {
@@ -199,16 +221,18 @@ export default {
         type: "warning"
       })
         .then(() => {
-          this.$fetch("/api/order/confirmUserOrder", { id: id }).then(response => {
-            if (response.code == 0) {
-              this.$message({ type: "success", message: "已确认收货!" });
-              _this.handleList(_this.tag);
+          this.$fetch("/api/order/confirmUserOrder", { id: id }).then(
+            response => {
+              if (response.code == 0) {
+                this.$message({ type: "success", message: "已确认收货!" });
+                _this.handleList(_this.tag);
+              }
             }
-          });
+          );
         })
         .catch(() => {});
     },
-    
+
     getList() {
       this.handleList(this.tag);
     },
@@ -290,23 +314,32 @@ export default {
       });
     },
     goType(type) {
+      this.loading = true;
+      this.page = "1";
       this.tag = type;
       this.handleList(this.tag);
     },
     // 订单列表
-    handleList(type) {
+    handleList() {
       var _this = this;
       this.$fetch("/api/order/userOrderList", {
-        type: type,
+        type: _this.tag,
         page: _this.page,
         limit: _this.limit,
         orderSn: ""
       }).then(response => {
-        console.log(response);
+        _this.loading = false;
         if (response.code == 0) {
           _this.dataList = response.data.records;
+          _this.total = response.data.total;
+        } else {
+          this.$message.error(response.message);
         }
       });
+    },
+    handleCurrentChange(val) {
+      this.page = val;
+      this.handleList();
     },
     del() {
       this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
@@ -328,19 +361,19 @@ export default {
         });
     },
     // 评价
-    appraise(id,orderSn) {
+    appraise(id, orderSn) {
       this.appraiseVisible = true;
       this.appraiseform.id = id;
       this.appraiseform.orderSn = orderSn;
     },
     // 评价
-    handleAppraise(){
-      if(isEmpty(this.appraiseform.star)){
+    handleAppraise() {
+      if (isEmpty(this.appraiseform.star)) {
         this.$message.error("请选择星级评价");
         return;
       }
       var _this = this;
-      this.$fetch("/api/order/commentUserOrder", { 
+      this.$fetch("/api/order/commentUserOrder", {
         content: _this.appraiseform.content,
         star: _this.appraiseform.star,
         id: _this.appraiseform.id
@@ -356,98 +389,9 @@ export default {
   }
 };
 </script>
+
 <style>
 @import "../../style/customer.css";
-</style>
- 
-<style> 
- .gl2-center {
-  width: 120px;
-}
- .gl2-center img {
-  width: 64px;
-  height: 64px;
-  object-fit: contain;
-}
-.center img {
-  margin-top: 0px;
-} 
-.gl2-dpth_xx {
-  margin: 7px 0 0 10px;
-}
-/* .dpth_xx {
-  float: left;
-  margin: 7px 0 0 128px;
-} */
-.gl2-ord_dxq {
-  color: #3d3e3e !important;
-}
-.ord_dxq {
-  /* height: 30px;
-  line-height: 30px;
-  color: #796f6f !important;
-  padding: 0 6px 0 6px;
-  margin-top: 2px;
-  font-weight: unset !important;
-  font-weight: bold; */
-}
-
- 
- 
- 
-
-.dpth_xx {
-  float: left;
-  margin: 0px 0 0 10px;
-}
- 
- 
-.gl2-logo-liname {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.gl2-ord_dd-userimg {
-  background: url(http://zljweb.com/images/gluserimg.png) no-repeat left center;
-  background-size: 16px 18px;
-  padding-left: 36px;
-}
-.ord_dd {
-  margin-right: 16px;
-}
-.ord_dxq {
-  height: 30px;
-  line-height: 30px;
-  color: #3d3e3e !important;
-  padding: 0 6px 0 6px;
-  margin-top: 2px;
-  font-weight: unset !important;
-  font-weight: bold;
-}
- 
- 
-
- 
-
-/* .gl2-order_li .gl2-companyname {
-  text-align: left;
-  padding-left: 15px;
-}
-
- 
-.gl2-companyname {
-  width: 300px;
-}
-.gl2-companyname a {
-  display: flex;
-  align-items: center;
-} */
- 
-
-
-
- 
-</style>
-
+</style> 
 
 

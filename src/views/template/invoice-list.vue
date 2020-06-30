@@ -55,7 +55,8 @@ export default {
       });
     },
     handleClick(item){
-
+      this.visible = false;
+      this.$emit('getInvoiceData',item)
     }
   }
 };

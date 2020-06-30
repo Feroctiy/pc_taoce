@@ -1,73 +1,396 @@
 <template>
-    <div class="main_width" style="padding:0 10px;box-sizing: border-box;overflow: auto;">
-        <div class="user_rt_cont gl2-user_rt_cont wddd_d gl2-wddd_d">
-            <div class="top_title wddd_xx gl2-wddd_xx">
-                <strong>订单详情</strong>
-            </div>
+  <div class="main_width customer order stepBox" id="orderDetail">
+    <div class="gl2-wddd_d flex justify-between">
+      <div class="top_title">
+        <strong>订单详情</strong>
+      </div>
+      <div>
+        <el-button type="primary">打印</el-button>
+        <el-button type="primary">导出</el-button>
+      </div>
+    </div>
+    <div>
+      <el-card class="box-card margin-bottom">
+        <div slot="header" class="clearfix"> <span class="tit">订单服务流程</span> </div>
+        <div>
+          <el-steps :active="active" align-center>
+            <el-step title="在线委托"></el-step><el-step title="信息确认"></el-step>
+            <el-step title="样品寄送"></el-step><el-step title="样品检测"></el-step>
+            <el-step title="完成检测"></el-step><el-step title="报告发放"></el-step>
+          </el-steps>
+        </div>
+      </el-card>
+      <el-card class="box-card margin-bottom" id="box">
+        <div slot="header" class="clearfix">
+          <span class="tit">订单编号 {{orderDetail.ordreSn}}</span>
+          <span style="float: right; padding: 3px 0;font-size:15px;">下单时间：{{orderDetail.addTime}}</span>
+        </div>
+      </el-card>
+      <el-card class="box-card margin-bottom">
+        <div slot="header" class="clearfix">
+          <span class="tit">订单流程记录</span>
+          <span style="float: right; padding: 3px 0"></span>
         </div>
         <div>
-            <el-card class="box-card margin-bottom" id="box">
-                <div slot="header" class="clearfix">
-                    <span class="tit">订单编号</span>
-                    <span style="float: right; padding: 3px 0">下单时间：{{orderDetail.addTime}}</span>
-                </div>
-            </el-card>
-            <el-card class="box-card margin-bottom">
-                <div slot="header" class="clearfix">
-                    <span class="tit">订单流程记录</span>
-                    <span style="float: right; padding: 3px 0"></span>
-                </div>
-            </el-card>
-            <el-card class="box-card margin-bottom">
-                <div slot="header" class="clearfix">
-                    <span class="tit">物流信息</span>
-                </div>
-            </el-card>
-            <el-card class="box-card margin-bottom">
-                <div slot="header" class="clearfix">
-                    <span class="tit">委托客户信息</span>
-                </div>
-            </el-card>
-            <el-card class="box-card margin-bottom">
-                <div slot="header" class="clearfix">
-                    <span class="tit">样品信息</span>
-                </div>
-            </el-card>
-            <el-card class="box-card margin-bottom">
-                <div slot="header" class="clearfix">
-                    <span class="tit">接样实验室</span>
-                </div>
-            </el-card>
-            <el-card class="box-card margin-bottom">
-                <div slot="header" class="clearfix">
-                    <span class="tit">检测项目</span>
-                </div>
-            </el-card>
-            <el-card class="box-card margin-bottom">
-                <div slot="header" class="clearfix">
-                    <span class="tit">报告信息</span>
-                </div>
-            </el-card>
-            <el-card class="box-card margin-bottom">
-                <div slot="header" class="clearfix">
-                    <span class="tit">发票信息</span>
-                </div>
-            </el-card>
-            <el-card class="box-card margin-bottom">
-                <div slot="header" class="clearfix">
-                    <span class="tit">其他</span>
-                </div>
-            </el-card>
-            
+          <el-timeline>
+            <el-timeline-item v-for="(activity, index) in orderDetail.orderMsgEntityList" :key="index" :timestamp="activity.createTime"> {{activity.msg}} </el-timeline-item>
+          </el-timeline> 
         </div>
+      </el-card>
+      <!-- 已取消订单 显示取消订单的原因  -->
+      <el-card class="box-card margin-bottom" v-if="orderDetail.orderStatus == '7'">
+        <div slot="header" class="clearfix">
+          <span class="tit">订单取消</span>
+        </div>
+        <div class="shqrm_c">
+          <div class="xiangq_ju" style="width: 90%;">
+            <span class="shenqrxq_bt">取消订单原因</span>
+            <el-input class="container_input required" maxlength="200" v-model="orderDetail.qxddms" disabled></el-input>
+          </div> 
+        </div> 
+      </el-card>
+      <!-- 待签收时展示物流信息 -->
+      <el-card class="box-card margin-bottom" v-if="orderDetail.orderStatus == '4' && orderDetail.orderFfbgxxEntity">
+        <div slot="header" class="clearfix">
+          <span class="tit">物流信息</span>
+        </div>
+        <div>物流编号：{{orderDetail.orderFfbgxxEntity.kddh}}</div>
+      </el-card>
+      <el-card class="box-card margin-bottom">
+        <div slot="header" class="clearfix">
+          <span class="tit">委托客户信息</span>
+        </div>
+        <div>
+          <ul>
+            <li class="xiangq_ju">
+              <span class="shenqrxq_bt">委托单位名称</span>
+              <el-input
+                v-model="orderDetail.wtdwmc"
+                placeholder="请输入委托单位名称"
+                class="container_input required"
+                maxlength="200"
+                disabled
+              ></el-input>
+            </li>
+            <li class="xiangq_ju">
+              <span class="shenqrxq_bt">委托单位英文名称</span>
+              <el-input
+                v-model="orderDetail.wtdwenmc"
+                placeholder="请输入委托单位英文名称"
+                class="container_input required"
+                maxlength="200"
+                disabled
+              ></el-input>
+            </li>
+            <li class="xiangq_ju">
+              <span class="shenqrxq_bt">统一社会信用代码</span>
+              <el-input
+                v-model="orderDetail.creditCode"
+                placeholder="请输入统一社会信用代码"
+                class="container_input required"
+                maxlength="150"
+                disabled
+              ></el-input>
+            </li>
+            <li class="xiangq_ju">
+              <span class="shenqrxq_bt">委托单位地址</span>
+              <el-input
+                v-model="orderDetail.wtdwAddress"
+                placeholder="请输入委托单位地址"
+                class="container_input required"
+                maxlength="200"
+                disabled
+              ></el-input>
+            </li>
+            <li class="xiangq_ju">
+              <span class="shenqrxq_bt">委托单位英文地址</span>
+              <el-input
+                v-model="orderDetail.wtdwEnAddress"
+                placeholder="请输入委托单位英文地址"
+                class="container_input required"
+                maxlength="200"
+                disabled
+              ></el-input>
+            </li>
+            <li></li>
+            <li class="xiangq_ju">
+              <span class="shenqrxq_bt">制造商与委托单位一致</span>
+              <el-radio v-model="orderDetail.isZzwtYz" label="1" disabled>是</el-radio>
+              <el-radio v-model="orderDetail.isZzwtYz" label="2" disabled>否</el-radio>
+            </li>
+            <li class="xiangq_ju">
+              <span class="shenqrxq_bt">制造商单位名称</span>
+              <el-input
+                v-model="orderDetail.zzsdwmc"
+                placeholder="请输入制造商单位名称"
+                class="container_input required"
+                maxlength="200"
+                disabled
+              ></el-input>
+            </li>
+            <li class="xiangq_ju">
+              <span class="shenqrxq_bt">制造商单位地址</span>
+              <el-input
+                v-model="orderDetail.zzsdwdz"
+                placeholder="请输入制造商单位地址"
+                class="container_input required"
+                maxlength="200"
+                disabled
+              ></el-input>
+            </li>
+            <li class="xiangq_ju">
+              <span class="shenqrxq_bt">生产商与委托单位一致</span>
+              <el-radio v-model="orderDetail.isScwtYz" label="1" disabled>是</el-radio>
+              <el-radio v-model="orderDetail.isScwtYz" label="2" disabled>否</el-radio>
+            </li>
+            <li class="xiangq_ju">
+              <span class="shenqrxq_bt">生产商名称</span>
+              <el-input
+                v-model="orderDetail.scsdwmc"
+                placeholder="请输入生产商名称"
+                class="container_input required"
+                maxlength="50"
+                disabled
+              ></el-input>
+            </li>
+            <li class="xiangq_ju">
+              <span class="shenqrxq_bt">生产商地址</span>
+              <el-input
+                v-model="orderDetail.scsdwdz"
+                placeholder="请输入生产商地址"
+                class="container_input required"
+                maxlength="200"
+                disabled
+              ></el-input>
+            </li>
+            <li class="xiangq_ju">
+              <span class="shenqrxq_bt">联系人</span>
+              <el-input
+                v-model="orderDetail.consignee"
+                placeholder="请输入联系人"
+                class="container_input required"
+                maxlength="50"
+                disabled
+              ></el-input>
+            </li>
+            <li class="xiangq_ju">
+              <span class="shenqrxq_bt">手机</span>
+              <el-input
+                v-model="orderDetail.phone"
+                placeholder="请输入手机"
+                class="container_input required"
+                maxlength="11"
+                disabled
+              ></el-input>
+            </li>
+          </ul>
+        </div>
+      </el-card>
+      <el-card class="box-card margin-bottom">
+        <div slot="header" class="clearfix">
+          <span class="tit">样品信息</span>
+        </div>
+        <div>
+          <ul class="shqrm_c" id="ulSampleMain">
+            <ul id="ulSampleTypeOne">
+              <li class="xiangq_ju">
+                <span class="shenqrxq_bt">样品名称<span class="weit_xhx">*</span></span>
+                <el-input v-model="orderDetail.ypmc" placeholder="请输入样品名称" class="container_input required" disabled ></el-input>
+              </li>
+              <li class="xiangq_ju">
+                <span class="shenqrxq_bt">样品英文名称</span>
+                <el-input v-model="orderDetail.ypenmc" placeholder="请输入样品英文名称" class="container_input required" disabled></el-input>
+              </li>
+              <li class="xiangq_ju">
+                <span class="shenqrxq_bt">样品数量<span class="weit_xhx">*</span>
+                </span>
+                <el-input v-model="orderDetail.ypsl" placeholder="请输入样品数量" class="container_input required" disabled></el-input>
+              </li>
+              <li class="xiangq_ju">
+                <span class="shenqrxq_bt">样品商标</span>
+                <el-input v-model="orderDetail.ypsbmc" placeholder="如为图片等格式，可以附件形式上传" class="container_input required" disabled></el-input>
+              </li>
+              <li class="xiangq_ju">
+                <span class="shenqrxq_bt">保密要求</span>
+                <el-input v-model="orderDetail.ypbmyq" placeholder="如为图片等格式，可以附件形式上传" class="container_input required" disabled></el-input>
+                
+              </li>
+              <li class="xiangq_ju">
+                <span class="shenqrxq_bt">型号规格</span>
+                <el-input v-model="orderDetail.ypxhgg" placeholder="请输入型号规格" class="container_input required" disabled ></el-input>
+              </li>
+              <!-- <li class="xiangq_ju">
+                <span class="shenqrxq_bt">样品退还方式</span>
+                <el-input v-model="orderDetail.ypthfs" class="container_input required" maxlength="50"></el-input>
+              </li> -->
+            </ul>
+          </ul>
+        </div>
+      </el-card> 
+      <el-card class="box-card margin-bottom">
+        <div slot="header" class="clearfix">
+          <span class="tit">接样实验室</span>
+        </div>
+        <div>
+          <el-radio-group>
+            <el-radio-button>{{orderDetail.receivingSampleLibEntity.mc}}</el-radio-button>
+          </el-radio-group>
+        </div>
+        <div style="line-height:35px;"><el-link type="warning" :underline="false">{{orderDetail.receivingSampleLibEntity.addr}}</el-link></div>
+      </el-card>
+      <el-card class="box-card margin-bottom">
+        <div slot="header" class="clearfix">
+          <span class="tit">检测项目</span>
+        </div>
+        <div>
+          <el-table ref="multipleTable" :data="orderDetail.orderItemEntityList" tooltip-effect="dark" style="width: 100%" border> 
+              <el-table-column label="项目名称" prop="jcxm"></el-table-column>
+              <el-table-column prop="bzhmc" label="检测标准"></el-table-column>
+              <el-table-column prop="bzh" label="检测标准号"></el-table-column>
+          </el-table>
+        </div>
+      </el-card>
+      <!-- 报告信息 -->
+      <el-card class="box-card margin-bottom">
+        <div slot="header" class="clearfix">
+          <span class="tit">报告信息</span>
+        </div>
+        <div>
+          <ul class="shqrm_c">
+            <ul id="ulSampleTypeOne">
+              <li class="xiangq_ju">
+                <span class="shenqrxq_bt">报告用途</span>
+                <el-input v-model="orderDetail.bgyt" class="container_input required" disabled></el-input> 
+              </li>
+              <li class="xiangq_ju">
+                <span class="shenqrxq_bt">报告数量 </span>
+                <el-input v-model="orderDetail.bgsl" class="container_input required" disabled></el-input> <span>份</span>
+              </li>
+              <li class="xiangq_ju">
+                <span class="shenqrxq_bt">报告语言</span>
+                <el-input value="中文语言" class="container_input required" disabled v-if="orderDetail.reportLauguage == '1'" ></el-input>
+                <el-input value="英文报告" class="container_input required" disabled v-if="orderDetail.reportLauguage == '2'" ></el-input>
+                <el-input value="中英文报告" class="container_input required"  disabled v-if="orderDetail.reportLauguage == '3'" ></el-input>
+              </li>
+              <li class="xiangq_ju">
+                <span class="shenqrxq_bt">结论形式</span>
+                <el-input v-model="orderDetail.jlxs" class="container_input required" disabled></el-input> 
+              </li>
+              <li class="xiangq_ju">
+                <span class="shenqrxq_bt">CQC申请编号</span>
+                <el-input v-model="orderDetail.cqcno"  class="container_input required" disabled></el-input>
+              </li>
+              <li class="xiangq_ju">
+                <span class="shenqrxq_bt">报告形式</span>
+                <el-input value="检测报告" class="container_input required" maxlength="50" disabled v-if="orderDetail.reportType == '1'" ></el-input>
+                <el-input value="报告证书" class="container_input required" maxlength="50" disabled v-if="orderDetail.reportType == '2'" ></el-input>
+              </li>
+              <li class="xiangq_ju">
+                <span class="shenqrxq_bt">发放方式</span>
+                <el-input class="container_input required" v-model="orderDetail.bgfsxs" disabled ></el-input>
+              </li>
+              <li class="xiangq_ju">
+                <span class="shenqrxq_bt">备注</span>
+                <el-input v-model="orderDetail.cqcno" class="container_input required" disabled></el-input>
+              </li>
+            </ul>
+            <div class="xiangq_ju" v-if="orderDetail.bgfsxs.indexOf('电子邮件') > -1">
+              <span class="shenqrxq_bt">报告收取邮箱</span>
+              <el-input v-model="orderDetail.bgemail"  class="container_input required" disabled></el-input>
+            </div> 
+            <div class="xiangq_ju" v-if="orderDetail.bgfsxs.indexOf('快递速运') > -1" style="width:500px;">
+              <span class="shenqrxq_bt">报告邮寄地址</span>
+              <el-input v-model="orderDetail.bgaddrXx"  class="container_input required" disabled ></el-input>
+            </div> 
+          </ul>
+        </div>
+      </el-card>
+      <!-- 发票信息 -->
+      <el-card class="box-card margin-bottom">
+        <div slot="header" class="clearfix">
+          <span class="tit">发票信息</span>
+        </div>
+        <div class="xiangq_ju" style="width: 90%;">
+          <span class="shenqrxq_bt">是否需要发票</span>
+          <el-radio-group v-model="orderDetail.isFp">
+            <el-radio label="1" disabled>是</el-radio>
+            <el-radio label="2" disabled>否</el-radio>
+          </el-radio-group>
+        </div>
+        <div class="margin-top" v-if="orderDetail.isFp == '1'"> 
+          <ul class="shqrm_c">
+              <li class="xiangq_ju">
+                <span class="shenqrxq_bt"> 发票抬头 </span>
+                <el-input class="container_input required" v-model="orderDetail.fptt" disabled></el-input>
+              </li>
+              <li class="xiangq_ju">
+                <span class="shenqrxq_bt"> 纳税人识别号 </span>
+                <el-input class="container_input required" v-model="orderDetail.nsrsbh" disabled></el-input>
+              </li>
+              <li class="xiangq_ju">
+                <span class="shenqrxq_bt">发票类型</span>
+                <el-radio v-model="orderDetail.fplx" label="1" disabled>专用发票</el-radio>
+                <el-radio v-model="orderDetail.fplx" label="2" disabled>普通发票</el-radio>
+              </li>
+              <li class="xiangq_ju">
+                <span class="shenqrxq_bt">注册地址 </span>
+                <el-input class="container_input required" v-model="orderDetail.dwzcdz" disabled></el-input>
+              </li>
+              <li class="xiangq_ju">
+                <span class="shenqrxq_bt">开户银行 </span>
+                <el-input class="container_input required" v-model="orderDetail.dwkhyh" disabled></el-input>
+              </li>
+              <li class="xiangq_ju">
+                <span class="shenqrxq_bt">银行账户</span>
+                <el-input class="container_input required" v-model="orderDetail.dwyhzh" disabled></el-input>
+              </li>
+              <li class="xiangq_ju">
+                <span class="shenqrxq_bt">注册电话号码</span>
+                <el-input class="container_input required" v-model="orderDetail.dwzcdh" disabled></el-input>
+              </li>
+          </ul>
+          <div class="xiangq_ju" style="border-bottom: none;">
+            <span class="shenqrxq_bt"> 发票邮寄地址 </span>  
+          </div>
+        </div> 
+      </el-card>
+      <el-card class="box-card margin-bottom">
+        <div slot="header" class="clearfix">
+          <span class="tit">其他</span>
+        </div>
+        <div class="shqrm_c">
+          <div class="xiangq_ju" style="width: 45%;">
+            <span class="shenqrxq_bt">样品退还方式</span>
+            <el-input class="container_input required" maxlength="200" v-model="orderDetail.ypthfs" disabled></el-input>
+          </div>
+        </div> 
+        <div class="shqrm_c">
+          <div class="xiangq_ju" style="width: 45%;">
+            <span class="shenqrxq_bt">需要沟通的其他内容</span>
+            <el-input class="container_input required" maxlength="200" v-model="orderDetail.xygtnr" disabled></el-input>
+          </div>
+        </div> 
+        <div class="shqrm_c">
+          <!-- fjxx -->
+          <li class="xiangq_ju gl2-xiangq_ju-fu" style="width: 90%;">
+            <span class="shenqrxq_bt gl2-shenq-fujian">附件 </span>
+            <a :href="orderDetail.fjxx" target="_blank">附件</a>
+          </li> 
+        </div>
+      </el-card>
     </div>
+  </div>
 </template>
 <script>
 import { isEmpty } from "@/utils";
 export default {
   data() {
     return {
-      orderDetail: {}
+      active:1,
+      orderDetail: {
+        bgfsxs:'',
+        receivingSampleLibEntity:{}
+      }
     };
   },
   created() {
@@ -89,571 +412,22 @@ export default {
 };
 </script>
 <style>
-#box .el-card__body{
-    padding: 0 !important;
-}
-</style>
-
- 
-<style scoped>
-
-.tit {
-    font-size: 16px;
-    color: #020308;
-    border-left: 5px solid #006fb3;
-    text-indent: 10px;
-    display: inline-block;
-    text-shadow: 3px 11px 8px rgba(249, 249, 249, 0.6);
-}
-.box-card{
-    font-size: 15px;
-}
-.cartIcons {
-  font-size: 15px;
-}
-.gl2-wddd_d {
-  padding: 20px;
-  height: auto !important;
-}
-
-.gl2-wddd_d .gl2-wddd_xx {
-  padding: 0;
-  margin: 0;
-  display: flex;
-  align-items: center;
-}
-
-.gl2-wddd_xx strong {
-  color: #747474;
-  font-size: 24px;
-}
-
-.gl2-user_rt_cont {
-  padding: 10px;
-}
-.user_rt_cont {
-  padding: 18px 28px 0px 28px;
-  margin-bottom: 10px;
-}
-.user_rt_cont {
-  overflow: hidden;
-  background: white;
-  padding: 20px;
-}
-.top_title strong {
-  font-size: 16px;
-  color: #020308;
-  border-left: 5px solid #006fb3;
-  text-indent: 10px;
-  display: inline-block;
-  text-shadow: 3px 11px 8px rgba(249, 249, 249, 0.6);
-}
-
-.ddxz_zt {
-  color: #e8393c;
-  border-bottom: 2px solid #e8393c;
-}
-.dd-zt {
-  display: inline-block;
-  float: left;
-  width: 729px;
-  margin-top: 6px;
-}
-.ddzt_xk li {
-  float: left;
-  height: 22px;
-  line-height: 22px;
-  margin-right: 43px;
-  cursor: pointer;
-}
-.ddxz_zt {
-  color: #e8393c;
-  border-bottom: 2px solid #e8393c;
-  font-size: 15px;
-}
-.gl2-cartIcons i {
-  background: #fe6666;
-}
-.cartIcons i {
-  position: absolute;
-  font-style: normal;
-  display: inline-block;
-  height: 15px;
-  line-height: 16px;
-  font-family: arial;
-  top: -5px;
-  padding: 1px 5px;
-  background: #ff5722;
-  border-radius: 15px;
-  color: #fff;
-  font-size: 14px;
-  left: 41px;
-  margin: 0 0 0 2px;
-  word-break: normal;
-}
-.gl2-cartIcons i {
-  background: #fe6666;
-}
-.cartIcons {
-  position: relative;
-}
-
-.gl2-order_li li:hover {
-  border: 1px solid #e4eaee;
-}
-
-.gl2-cartIcons li {
-  color: #333333;
-}
-
-.gl2-order_li li:hover caption {
-  background: #f5f8fa;
-}
-
-.gl2-order_li li caption strong {
-  color: #aaaaaa;
-  margin-right: 20px;
-}
-
-.gl2-order_li li caption strong em {
-  color: #3d3e3e;
-}
-
-.gl2-ord_dxq {
-  color: #3d3e3e !important;
-}
-
-.gl2-ddzt_dzf {
-  background: none;
-  color: #333;
-  font-size: 14px;
-}
-
-.gl2-ddzt_zt {
-  background: none;
-  color: #999;
-}
-</style>
-
-<style>
-.gl2-center img {
-  width: 64px;
-  height: 64px;
-  object-fit: contain;
-}
-.center img {
-  margin-top: 0px;
-}
-.order_li {
-  overflow: hidden;
-}
-
-.order_li li {
-  border: 1px solid #f1eeee;
-  margin-bottom: 22px;
-}
-
-.order_li li caption {
-  background: #f5f5f5;
-  padding: 0 0px 0px 10px;
-}
-
-.order_li li caption strong {
-  font-size: 14px;
-  font-weight: normal;
-  color: grey;
-}
-
-.order_li li caption a {
-  color: #565252;
-  font-weight: bold;
-}
-
-.order_detail_infor {
-  overflow: hidden;
-}
-
-.order_detail_infor dt {
-  height: 40px;
-  line-height: 40px;
-  border-bottom: 1px #d2d2d2 solid;
-}
-
-.order_detail_infor dd {
-  margin: 10px;
-  width: 47%;
-  float: left;
-  line-height: 1.5;
-}
-
-.order_detail_infor dd span {
-  color: grey;
-}
-
-.order_detail_infor dd a {
-  background: #6600ff;
-  color: white;
-  padding: 5px 8px;
-  border-radius: 2px;
-  font-size: 12px;
-  margin: 0 10px;
-  cursor: pointer;
-}
-
-.favorite_nav {
-  width: 100%;
-  overflow: hidden;
-}
-
-.favorite_nav li {
-  float: left;
-  width: 50%;
-  text-align: center;
-  height: 35px;
-  line-height: 35px;
-  background: #fafafa;
-  border-bottom: 1px #d2d2d2 solid;
-  cursor: pointer;
-}
-
-.favorite_nav li.curr_li {
-  border-bottom: 1px #e6e6e6 solid;
-  font-weight: bold;
-}
-
-.favoriteWrap {
-  display: none;
-}
-
-.favorite_list {
-  overflow: hidden;
-  width: 100%;
-}
-
-.favorite_list li {
-  float: left;
-  width: 175px;
-  height: 175px;
+#box .el-card__body {
+  padding: 0 !important;
 }
 </style>
 <style>
-.order_table {
-  width: 100%;
-  table-layout: fixed;
-}
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-.order_li li caption {
-  background: #f5f5f5;
-  padding: 0 0px 0px 10px;
-}
-.order_table caption {
-  height: 35px;
-  line-height: 35px;
-  border-bottom: 1px #eaeaea solid;
-}
-
-.gl2-order_li li caption strong {
-  color: #aaaaaa;
-  margin-right: 20px;
-}
-.order_li li caption strong {
-  font-size: 14px;
-  font-weight: normal;
-  color: grey;
-}
-.order_table caption strong {
-  float: left;
-  font-size: 16px;
-}
-
-.order_table caption .shop_name {
-  margin: 0 15px;
-  font-style: normal;
-  float: left;
-  font-weight: bold;
-  color: #aaa;
-}
-
-.order_table caption .shop_name:before {
-  content: ".";
-  font-family: "151219regular";
-  margin-right: 2px;
-  font-size: 16px;
-  font-weight: normal;
-}
-
-.order_table caption a {
-  float: right;
-  cursor: pointer;
-}
-
-.order_table th {
-  height: 40px;
-  line-height: 40px;
-  background: #fafafa;
-  text-align: center;
-}
-
-.order_table td {
-  padding: 8px 0px 8px 0px;
-  font-size: 14px;
-  text-align: center;
-}
-
-.order_table td address {
-  font-style: normal;
-  line-height: 1.3;
-}
-
-.order_table td input {
-  display: inline-block;
-}
-
-.order_table td .number {
-  width: 40px;
-  text-align: center;
-  height: 25px;
-  line-height: 25px;
-}
-
-.order_table td .jj_btn {
-  width: 30.5px;
-  height: 30.5px;
-  line-height: 20px;
-  margin-right: 5px;
-}
-
-.order_table td .a_btn {
-  color: #fff;
-  border-color: #ffffff;
-  margin-left: 7px;
-  min-width: 110px;
-  height: 36px;
-  line-height: 34px;
-  font-size: 16px;
-  display: inline-block;
-}
-
-.gl2-dpth_xx {
-  margin: 7px 0 0 10px;
-}
-.dpth_xx {
-  float: left;
-  margin: 7px 0 0 128px;
-}
-.order_table caption a {
-  float: right;
-  cursor: pointer;
-}
-.gl2-ord_dxq {
-  color: #3d3e3e !important;
-}
-.ord_dxq {
-  height: 30px;
-  line-height: 30px;
-  color: #796f6f !important;
-  padding: 0 6px 0 6px;
-  margin-top: 2px;
-  font-weight: unset !important;
-  font-weight: bold;
-}
-
-.order_table td {
-  padding: 8px 0px 8px 0px;
-  font-size: 14px;
-  text-align: center;
-}
-.gl2-center {
-  width: 120px;
-}
-.ord_gd {
-  height: 60px;
-}
+@import "../../style/customer.css";
+@import "../../style/step.css";
 </style>
-
-
-
-
-
-
-
-
 <style>
-/* 我的订单 */
-.order_li {
-  overflow: hidden;
-}
-.dd_wt {
-  border-bottom: 1px #eaeaea solid;
-}
-.order_li li {
-  border: 1px solid #f1eeee;
-  margin-bottom: 22px;
-}
-.order_table {
-  width: 100%;
-  table-layout: fixed;
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-.order_li li caption {
-  background: #f5f5f5;
-  padding: 0 0px 0px 10px;
-  height: 35px;
-  line-height: 35px;
-  border-bottom: 1px #eaeaea solid;
-}
-.order_li li caption strong {
-  font-size: 14px;
-  font-weight: normal;
-  color: grey;
-  color: #aaaaaa;
-  margin-right: 20px;
-  float: left;
-  font-size: 16px;
-}
-
-.dpth_xx {
-  float: left;
-  margin: 0px 0 0 10px;
-}
-.order_li li caption a {
-  color: #565252;
-  font-weight: bold;
-}
-.order_table caption a {
-  float: right;
-  cursor: pointer;
-}
-.ord_dd {
-  margin-right: 16px;
-}
-.order_li li caption a {
-  color: #565252;
-  font-weight: bold;
-}
-.order_table caption a {
-  float: right;
-  cursor: pointer;
-}
-.gl2-logo-liname {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.gl2-ord_dd-userimg {
-  background: url(http://zljweb.com/images/gluserimg.png) no-repeat left center;
-  background-size: 16px 18px;
-  padding-left: 36px;
-}
-.ord_dd {
-  margin-right: 16px;
-}
-.ord_dxq {
-  height: 30px;
-  line-height: 30px;
-  color: #3d3e3e !important;
-  padding: 0 6px 0 6px;
-  margin-top: 2px;
-  font-weight: unset !important;
-  font-weight: bold;
-}
-.order_table caption a {
-  float: right;
-  cursor: pointer;
-}
-.dd_wt {
-  border-bottom: 1px #eaeaea solid;
-}
-.order_table td {
-  padding: 8px 0px 8px 0px;
-  font-size: 14px;
-  text-align: center;
-}
-.gl2-center {
-  width: 120px;
-}
-.ord_gd {
-  height: 60px;
-}
-
-.gl2-order_li .gl2-companyname {
-  text-align: left;
-  padding-left: 15px;
-}
-.order_table .qymc_dd {
-  padding: 4px;
-  line-height: 18px;
-}
-.order_table td {
-  font-size: 14px;
-}
-.gl2-companyname {
-  width: 300px;
-}
-.gl2-companyname a {
-  display: flex;
-  align-items: center;
-}
-.order_table td {
-  padding: 8px 0px 8px 0px;
-  font-size: 14px;
-  text-align: center;
-}
-
-.ord_bk_z {
-  border-left: 1px #eaeaea solid;
-}
-.gl2-ord_jg {
-  color: #e8393c;
-}
-
-.ddzt_dzf {
-  color: #3a3737;
-  padding: 5px 7px 5px 7px;
-  background: #e8e8e8;
-  border-radius: 4px;
-  font-size: 10px;
-  padding: 3px 4px 3px 4px;
-  background: #e8e8e8;
-  border-radius: 4px;
-  font-size: 10px;
-}
-.gl2-ddzt_dzf {
-  background: none;
-  color: #333;
-  font-size: 14px;
-}
-
-.ddzt_zt {
-  background: #e8e8e8;
-  padding: 5px 7px 5px 7px;
-  border-radius: 3px;
-  color: #3a3737;
-}
-.gl2-ddzt_zt {
-  background: none;
-  color: #999;
-  /* padding: 6px 15px; */
-}
-.gl2-order_table .tj_dd_a .mrxz {
-  background: #359be3;
-  color: #fff;
-  border: 0;
-  border-radius: 3px;
-  height: auto;
-  display: inline-block;
-  text-align: center;
-  box-sizing: border-box;
-  padding: 0 6px;
-}
-td {
-  line-height: 4.4em;
+#orderDetail.stepBox .container_input {
+  width: 52%;
 }
 </style>
+
+
+  
 
 
 

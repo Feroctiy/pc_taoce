@@ -4,7 +4,7 @@
       <div class="top_nav">
         <div class="main_width flex justify-between">
           <div>
-            <span class="padding-right">嗨，欢迎来到 </span>
+            <span class="padding-right">嗨，欢迎来到</span>
             <router-link to="/login" v-if="!userInfo.username">
               <span class="padding-right">请登录</span>
             </router-link>
@@ -18,7 +18,7 @@
           </div>
           <div>
             <span class="padding-right cursor-pointer" @click="goUrl('/sort')">我要检测</span>
-            <span class="padding-right cursor-pointer" @click="goUrl('/enter-step')">我要开店</span>
+            <span class="padding-right cursor-pointer" @click="goUrl('/shopJoinApply')">我要开店</span>
             <span class="padding-right cursor-pointer" @click="goUrl('/order')">草稿箱</span>
             <span class="padding-right cursor-pointer" @click="goUrl('/collection')">收藏夹</span>
             <el-popover placement="top-start" width="100" trigger="hover">
@@ -57,12 +57,17 @@
           active-text-color="#fff"
           router
         >
-          <el-menu-item index="/">产品分类</el-menu-item>
-          <el-menu-item index="/">首页</el-menu-item>
+          <el-menu-item index="/" v-if="activeIndex2 == '1'">产品分类</el-menu-item>
+          <!-- <el-menu-item index="/">首页</el-menu-item> -->
           <el-menu-item index="/news">新闻中心</el-menu-item>
-          <el-menu-item index="/1">问答</el-menu-item>
+          <el-menu-item index="/answer">问答集锦</el-menu-item>
           <el-menu-item index="/institution">机构展示</el-menu-item>
-          <el-menu-item index="/1">查询</el-menu-item>
+          <el-submenu index="/reportFind">
+            <template slot="title">查询</template>
+            <el-menu-item index="/reportFind">报告查询</el-menu-item>
+            <el-menu-item index="/certificateFind">证书查询</el-menu-item>
+            <el-menu-item index="/standardFind">标准查询</el-menu-item>
+          </el-submenu>
           <el-menu-item index="/test-knowledge">检测知识</el-menu-item>
         </el-menu>
       </div>
@@ -88,9 +93,9 @@ export default {
     return {
       input: "",
       selectType: "1",
-      activeIndex2: "",
+      activeIndex2: "1",
       userInfo: {
-        username:''
+        username: ""
       },
       input1: "",
       input2: "",
@@ -100,12 +105,14 @@ export default {
   },
   created() {
     if (window.localStorage.getItem("paoce_token")) {
-      this.$fetch( "/api/user/userInfo?token=" + window.localStorage.getItem("paoce_token")).then(response => {
+      this.$fetch(
+        "/api/user/userInfo?token=" + window.localStorage.getItem("paoce_token")
+      ).then(response => {
         this.userInfo = response.data;
       });
     } else {
       this.userInfo = {
-        username:''
+        username: ""
       };
     }
   },
@@ -125,7 +132,6 @@ export default {
 };
 </script>
 <style>
- 
 #logo_nav .el-select .el-input {
   width: 130px;
 }
@@ -135,11 +141,10 @@ export default {
   line-height: 45px;
 }
 #top-nav .el-menu-item {
-  padding: 0 60px;
+  padding: 0 80px;
 }
 #top-nav .top_nav {
   line-height: 40px;
   background-color: #f1f1f1;
 }
- 
 </style>

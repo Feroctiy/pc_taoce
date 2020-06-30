@@ -7,11 +7,11 @@
                 <strong>送样信息</strong>
             </div>
         </div>
-        <div>
+        <div style="padding-left:40px;">
             <div class="tip">* 寄送样品时，请附上准确的订单编号；建议将订单打印后连同样品一起寄送；如订单号不准确，机构将无法及时确认收样；</div>
             <div>
                 <span class="samplesinfo-item">送样地址</span>
-                <span>{{ orderDetail.receivingSampleLibEntity.addr }}</span>
+                <span>{{ orderDetail.receivingSampleLibEntity.remark }}</span>
             </div>
             <div>
                 <span class="samplesinfo-item">送样要求</span>
@@ -140,7 +140,7 @@ export default {
 }
 #samplesinfo .tip {
   color: red;
-  line-height: 40px;
+  /* line-height: 40px; */
 }
 .samplesinfo-item {
   font-size: 16px;

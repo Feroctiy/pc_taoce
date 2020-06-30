@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "taoce",
   "version": "1.0.0",
   "description": "A Vue.js project",
   "author": "",
@@ -16,7 +16,9 @@
   "dependencies": {
     "axios": "^0.19.2",
     "babel-polyfill": "^6.26.0",
+    "echarts": "^4.8.0",
     "element-ui": "^2.13.0",
+    "hx-websdk": "^1.6.1",
     "js-md5": "^0.7.3",
     "less": "^3.11.1",
     "less-loader": "^5.0.0",
@@ -46,6 +48,7 @@
     "copy-webpack-plugin": "^4.0.1",
     "cross-spawn": "^5.0.1",
     "css-loader": "^0.28.11",
+    "es6-promise": "^4.2.8",
     "eslint": "^4.15.0",
     "eslint-config-standard": "^10.2.1",
     "eslint-friendly-formatter": "^3.0.0",

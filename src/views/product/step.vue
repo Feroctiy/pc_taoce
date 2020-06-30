@@ -8,7 +8,7 @@
           <el-steps :active="active" align-center>
             <el-step title="在线委托"></el-step><el-step title="信息确认"></el-step>
             <el-step title="样品寄送"></el-step><el-step title="样品检测"></el-step>
-            <el-step title="完成检测"></el-step><el-step title="报告发放"></el-step>
+            <el-step title="完成检测"></el-step><el-step :title="param.reportType == '1' ? '报告发放':'证书发放'"></el-step>
           </el-steps>
         </div>
       </el-card>
@@ -20,24 +20,16 @@
         <div>
           <el-table :data="info" style="width: 100%" border="">
             <el-table-column label="服务图片" align="center">
-              <template slot-scope="scope">
-                <img :src="goodsDetail.goodsImg" alt="" style="width:100px">
-              </template>
+              <template slot-scope="scope"> <img :src="goodsDetail.goodsImg" alt="" style="width:100px"> </template>
             </el-table-column>
             <el-table-column prop="name" label="服务名称" align="center">
-              <template slot-scope="scope">
-                <span>{{goodsDetail.goodsName}}</span>
-              </template>
+              <template slot-scope="scope"> <span>{{goodsDetail.goodsName}}</span> </template>
             </el-table-column>
             <el-table-column label="机构名称" align="center">
-              <template slot-scope="scope">
-                <span>{{goodsDetail.jgmc}}</span>
-              </template>
+              <template slot-scope="scope"> <span>{{goodsDetail.jgmc}}</span> </template>
             </el-table-column>
             <el-table-column label="检测周期" align="center">
-              <template slot-scope="scope">
-                <span>{{goodsDetail.serviceProtocol}}</span>
-              </template>
+              <template slot-scope="scope"> <span>{{goodsDetail.serviceProtocol}}</span> </template>
             </el-table-column>
             <el-table-column label="价格" align="center">
               <template slot-scope="scope">
@@ -49,19 +41,48 @@
           </el-table>
         </div>
       </el-card>
+      <el-card class="box-card margin-bottom">
+        <div slot="header" class="clearfix">
+          <span class="tit">附加服务信息</span>
+        </div>
+        <div>
+          <el-table :data="info" style="width: 100%" border ref="multipleTable" @selection-change="handleOtherChange">
+            <el-table-column type="selection" width="55"></el-table-column>
+            <el-table-column label="附加服务名称" align="center">
+              <template slot-scope="scope"> <img :src="goodsDetail.goodsImg" alt="" style="width:100px"> </template>
+            </el-table-column>
+            <el-table-column prop="name" label="送样数量/单" align="center">
+              <template slot-scope="scope"> <span>{{goodsDetail.goodsName}}</span> </template>
+            </el-table-column>
+            <el-table-column label="价格/单" align="center">
+              <template slot-scope="scope"> <span>{{goodsDetail.jgmc}}</span> </template>
+            </el-table-column>
+            <el-table-column label="单" align="center">
+              <template slot-scope="scope"> 
+                <el-input-number v-model="num" @change="handleChange" :min="1"></el-input-number> 
+              </template>
+            </el-table-column>
+            <el-table-column label="" align="center">
+              <template slot-scope="scope">
+                <el-button @click="handleClickDetail(scope.row)" type="text" size="small">详情</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </el-card>
       <!-- 委托客户信息 -->
       <el-card class="box-card margin-bottom">
         <div slot="header" class="clearfix"><span class="tit">委托客户信息</span></div>
         <div>
           <el-button type="primary" size="small" class="margin-left margin-right" @click="getClient">选择委托客户+</el-button>请从用户身份认证信息中选择，若您未进行身份认证，请点击进行
-          <router-link to="/authentication"><el-button type="text" class="margin-left">身份认证</el-button></router-link>
+          <router-link to="/authentication" target="_blank"><el-button type="text">身份认证</el-button></router-link>
           <ul>
               <li class="xiangq_ju">
-                <span class="shenqrxq_bt">委托单位名称 <span class="weit_xhx">*</span></span>
+                <span class="shenqrxq_bt">委托单位名称<span class="weit_xhx" v-if="param.reportLauguage != '2'">*</span></span>
                 <el-input v-model="param.wtdwmc" placeholder="请输入委托单位名称" class="container_input required" maxlength="200" ></el-input>
               </li>
               <li class="xiangq_ju">
-                <span class="shenqrxq_bt">委托单位英文名称</span>
+                <span class="shenqrxq_bt">委托单位英文名称<span class="weit_xhx" v-if="param.reportLauguage != '1'">*</span></span>
                 <el-input v-model="param.wtdwenmc" placeholder="请输入委托单位英文名称" class="container_input required" maxlength="200" ></el-input>
               </li>
               <li class="xiangq_ju">
@@ -79,27 +100,35 @@
               <li></li>
               <li class="xiangq_ju">
                 <span class="shenqrxq_bt">制造商与委托单位一致</span>
-                <el-radio v-model="param.isZzwtYz" label="1">是</el-radio>
-                <el-radio v-model="param.isZzwtYz" label="2">否</el-radio>
+                <el-radio-group v-model="param.isZzwtYz">
+                  <el-radio label="1">是</el-radio>
+                  <el-radio label="2">否</el-radio>
+                </el-radio-group>
               </li>
-              <li class="xiangq_ju">
+              <li v-if="param.isZzwtYz == '1'"></li>
+              <li v-if="param.isZzwtYz == '1'"></li>
+              <li class="xiangq_ju" v-if="param.isZzwtYz == '2'">
                 <span class="shenqrxq_bt">制造商单位名称 <span class="weit_xhx">*</span></span>
                 <el-input v-model="param.zzsdwmc" placeholder="请输入制造商单位名称" class="container_input required" maxlength="200"></el-input>
               </li>
-              <li class="xiangq_ju">
+              <li class="xiangq_ju" v-if="param.isZzwtYz == '2'">
                 <span class="shenqrxq_bt">制造商单位地址</span>
                 <el-input v-model="param.zzsdwdz" placeholder="请输入制造商单位地址" class="container_input required" maxlength="200"></el-input>
               </li>
               <li class="xiangq_ju">
                 <span class="shenqrxq_bt">生产商与委托单位一致</span>
-                <el-radio v-model="param.isScwtYz" label="1">是</el-radio>
-                <el-radio v-model="param.isScwtYz" label="2">否</el-radio>
+                <el-radio-group v-model="param.isScwtYz">
+                  <el-radio label="1">是</el-radio>
+                  <el-radio label="2">否</el-radio>
+                </el-radio-group> 
               </li>
-              <li class="xiangq_ju">
+              <li v-if="param.isScwtYz == '1'"></li>
+              <li v-if="param.isScwtYz == '1'"></li>
+              <li class="xiangq_ju" v-if="param.isScwtYz == '2'">
                 <span class="shenqrxq_bt">生产商名称 <span class="weit_xhx">*</span></span>
                 <el-input v-model="param.scsdwmc" placeholder="请输入生产商名称" class="container_input required" maxlength="50"></el-input>
               </li>
-              <li class="xiangq_ju">
+              <li class="xiangq_ju" v-if="param.isScwtYz == '2'">
                 <span class="shenqrxq_bt">生产商地址</span>
                 <el-input v-model="param.scsdwdz" placeholder="请输入生产商地址" class="container_input required" maxlength="200" ></el-input>
               </li>
@@ -145,7 +174,7 @@
               </li>
               <li class="xiangq_ju">
                 <span class="shenqrxq_bt">CQC申请编号</span>
-                <el-input v-model="param.cqcno" placeholder="CQC申请编号" class="container_input required" maxlength="50" ></el-input>
+                <el-input v-model="param.cqcno" placeholder="请输入CQC申请编号" class="container_input required" maxlength="50" ></el-input>
               </li>
               <li class="xiangq_ju">
                 <span class="shenqrxq_bt">报告形式</span>
@@ -160,23 +189,23 @@
               </li>
               <li class="xiangq_ju">
                 <span class="shenqrxq_bt">备注</span>
-                <el-input v-model="param.cqcno" placeholder="备注" class="container_input required" maxlength="200"></el-input>
+                <el-input v-model="param.bgbz" placeholder="请输入备注" class="container_input required" maxlength="200"></el-input>
               </li>
             </ul>
             <div class="xiangq_ju" v-if="param.bgfsxs.indexOf('电子邮件') > -1">
-              <span class="shenqrxq_bt">报告收取邮箱</span>
-              <el-input v-model="param.bgemail" placeholder="报告收取邮箱" class="container_input required" maxlength="50"></el-input>
+              <span class="shenqrxq_bt">报告收取邮箱<span class="weit_xhx">*</span></span>
+              <el-input v-model="param.bgemail" placeholder="请输入报告收取邮箱" class="container_input required" maxlength="50"></el-input>
             </div>
             <div class="xiangq_ju" style="border-bottom: none;display:block;height:auto;" v-if="param.bgfsxs.indexOf('快递速运') > -1">
               <span class="shenqrxq_bt">报告邮寄地址<span class="weit_xhx">*</span></span>
-              <el-card class="box-card" shadow="never" id="address-box">
+              <el-card :class=" !moreAddress ? 'box-card moreAddress':'box-card'" shadow="never" id="address-box" v-if="addressList.length > 0">
                 <div v-for="item in addressList" :key="item.id" class="text item">
                   <el-radio v-model="param.bgaddrId" :label="item.id" @change="opt">{{item.address }}</el-radio>
-                </div>
+                </div> 
               </el-card>
               <div style="margin-top: 15px;">
                 <el-button type="primary" size="small" class="margin-left" @click="addAddress">新增地址+</el-button>
-                <el-button type="primary" size="small" class="margin-left" v-if="addressList.length > 1">更多地址</el-button>
+                <el-button type="primary" size="small" class="margin-left" v-if="addressList.length > 1" @click="moreAddress = !moreAddress">{{ !moreAddress ? '更多地址':'收起地址'}}</el-button>
               </div>
             </div>
           </ul>
@@ -185,12 +214,13 @@
       <el-card class="box-card margin-bottom">
         <div class="agree">
           <span>产品服务协议</span>
-          <router-link to="/addOrder2"> <el-button type="text">查看详情</el-button> </router-link>
+          <router-link to="/agreement" target="_blank"> <el-button type="text">查看详情</el-button> </router-link>
         </div>
         <div class="text-right"><el-button style="margin-top: 12px;" type="primary" @click="next">下一步</el-button></div>
       </el-card>
       <!-- 新增地址 -->
       <add-address v-if="testStatus" ref="addaddress" @refreshDataList="getAddressList"/>
+      <!-- 委托用户列表 -->
       <client v-if="clientStatus" ref="client" @getClientData="getClientData"/>
     </el-form>
   </div>
@@ -198,12 +228,15 @@
 
 <script>
 import { isEmpty } from "@/utils";
+import { validateMobile,validateEmail } from '@/utils/validate'
 import addAddress from "../template/add-address";
 import client from "../template/client";
 export default {
   components: { addAddress, client },
   data() {
     return {
+      moreAddress:false,
+      clientStatus: false, // 选择委托用户状态
       param: {
         reportLauguage: "",
         reportType: "",
@@ -223,7 +256,7 @@ export default {
       radio1: "1",
       active: 0,
       testStatus: false,
-      clientStatus: false,
+      
       info: [{}],
       bgytList: [
         { value: "社会证明", label: "社会证明" },
@@ -245,53 +278,141 @@ export default {
   },
   mounted() {},
   created() {
+    if (!window.localStorage.getItem("paoce_token")) {
+      this.$router.push({ path: "/login" });
+      return;
+    }
+    // 获取地址列表
     this.getAddressList();
-    var goodsDetail = JSON.parse(
-      window.localStorage.getItem("paoce_token-detail")
-    );
-    this.param.reportType = goodsDetail.opt.reportType;
-    this.param.reportLauguage = goodsDetail.opt.reportLauguage;
-    this.goodsDetail = goodsDetail;
+
+    if(window.localStorage.getItem("paoce_token-detail")){
+      // 获取产品信息
+      var goodsDetail = JSON.parse(window.localStorage.getItem("paoce_token-detail"));
+      this.param.reportType = goodsDetail.opt.reportType; // 
+      this.param.reportLauguage = goodsDetail.opt.reportLauguage;
+      this.goodsDetail = goodsDetail; 
+    }
+    
+    // 如果本地有保存，直接获取
     if (window.localStorage.getItem("taoce-param")) {
       this.param = JSON.parse(window.localStorage.getItem("taoce-param"));
     }
+    if(this.$route.query.orderId){
+      this.getOrderInfo(this.$route.query.orderId);
+
+    }
+    
+
+    // 订单复制功能 地址栏携带订单id
+    
   },
-  methods: {
-    opt(id) {
-      console.log(id);
-      this.param.bgaddrId = id;
+  methods: {  
+    handleOtherChange(){
+
     },
-    getClientData(item) {
-      console.log(item);
-      this.param.wtdwmc = item.dwmc;
-      this.param.creditCode = item.creditCode;
-      this.param.consignee = item.legalPerson;
+    // 商品详情页面
+    getGoodDetail(id,shopid){
+      var _this = this;
+      this.$post( "/api/goods/goodsInfo?goods_id=" + id + "&shopid=" + shopid, {} ).then(response => {
+        if (response.code == 0) {
+          var opt = {
+            reportLauguage: _this.param.reportLauguage,
+            reportType: _this.param.reportType
+          }
+          this.goodsDetail = response.data;
+          this.goodsDetail.opt = opt;
+          window.localStorage.setItem("paoce_token-detail", JSON.stringify(this.goodsDetail));
+        }else{
+          this.$message.error(response.msg)
+        }
+      });
+    }, 
+    // 查看订单详情
+    getOrderInfo(orderId) {
+      var _this = this;
+      this.$fetch("/api/order/orderInfo", {
+        orderId: orderId
+      }).then(response => {
+        if (response.code == 0) {
+          _this.param = response.data;
+          _this.getGoodDetail(_this.param.goodsId,_this.param.agentId) 
+        }
+      });
     },
+    handleIsZzwtYz(){ 
+      this.param.scsdwmc = this.param.isZzwtYz == '1' ? this.param.wtdwmc : '' ;
+      this.param.scsdwdz = this.param.isZzwtYz == '1' ? this.param.wtdwAddress : ''; 
+    }, 
+    // 下一步
     next() {
       console.log(this.param);
-      if (isEmpty(this.param.wtdwmc)) {
-        this.$message.error("请输入委托单位名称");
-        return;
+      // 生产商
+      this.param.scsdwmc = this.param.isScwtYz == '1' ? this.param.wtdwmc : this.param.scsdwmc ;
+      this.param.scsdwdz = this.param.isScwtYz == '1' ? this.param.wtdwAddress : this.param.scsdwdz;
+      // 制造商
+      this.param.zzsdwmc = this.param.isZzwtYz == '1' ? this.param.wtdwmc : this.param.zzsdwmc ;
+      this.param.zzsdwdz = this.param.isZzwtYz == '1' ? this.param.wtdwAddress : this.param.zzsdwdz;
+      /**
+       * 中文报告中文字段必填
+       * 英文报告英文字段必填
+       * 中文报告中英文字段必填
+      **/
+      if(this.param.reportLauguage == '1' || this.param.reportLauguage == '3'){
+          if (isEmpty(this.param.wtdwmc)) {
+            this.$message.error("请输入委托单位名称");
+            return;
+          }
+      }
+      if(this.param.reportLauguage == '2' || this.param.reportLauguage == '3'){
+          if (isEmpty(this.param.wtdwenmc)) {
+            this.$message.error("请输入委托单位英文名称");
+            return;
+          }
       }
       if (isEmpty(this.param.zzsdwmc)) {
         this.$message.error("请输入制造商单位名称");
         return;
       }
+      if(isEmpty(this.param.zzsdwmc)){
+        this.$$message.error("请输入制造商单位名称");
+        return;
+      } 
       if (isEmpty(this.param.scsdwmc)) {
         this.$message.error("请输入生产商名称");
-        return;
-      }
-      if (isEmpty(this.param.phone)) {
-        this.$message.error("请输入手机号");
         return;
       }
       if (isEmpty(this.param.consignee)) {
         this.$message.error("请输入联系人");
         return;
       }
+      if (isEmpty(this.param.phone)) {
+        this.$message.error("请输入手机号");
+        return;
+      }
+      if (!validateMobile(this.param.phone)) {
+        this.$message.error("请输入正确的手机号");
+        return;
+      }  
+      
       if (isEmpty(this.param.bgsl)) {
         this.$message.error("请输入报告数量");
         return;
+      }
+      if(this.param.bgfsxs.indexOf('电子邮件') > -1){
+        if (isEmpty(this.param.bgemail)) {
+          this.$message.error("请输入报告接收邮箱");
+          return;
+        }
+        if (!validateEmail(this.param.bgemail)) {
+          this.$message.error("请输入正确的报告接收邮箱");
+          return;
+        }  
+      }
+      if(this.param.bgfsxs.indexOf('快递速运') > -1){
+        if (isEmpty(this.param.bgaddrId)) {
+          this.$message.error("请选择报告邮寄地址");
+          return;
+        }
       }
 
       this.param.agentId = this.goodsDetail.shopid;
@@ -300,18 +421,32 @@ export default {
       window.localStorage.setItem("taoce-param", JSON.stringify(this.param));
       this.$router.push({ path: "/step1" });
     },
-    // 新增检测标准
+    // 新增地址
     addAddress() {
       this.testStatus = true;
-      this.$nextTick(() => {
-        this.$refs.addaddress.init();
-      });
+      this.$nextTick(() => { this.$refs.addaddress.init(); });
     },
+    opt(id) { 
+      this.param.bgaddrId = id;
+    },
+    // 选择委托客户
     getClient() {
       this.clientStatus = true;
-      this.$nextTick(() => {
-        this.$refs.client.init();
-      });
+      this.$nextTick(() => { this.$refs.client.init(); });
+    },
+    getClientData(item) { 
+      this.param.wtdwmc = item.dwmc;
+      this.param.creditCode = item.creditCode;
+      this.param.consignee = item.legalPerson;
+
+      if(this.param.isScwtYz == '1'){
+        this.param.scsdwmc = this.param.wtdwmc;
+        this.param.scsdwdz = this.param.wtdwAddress;
+      } 
+      if(this.param.isZzwtYz == '1'){
+        this.param.zzsdwmc = this.param.wtdwmc;
+        this.param.zzsdwdz = this.param.wtdwAddress;
+      }
     },
     // 获取地址列表
     getAddressList() {
@@ -320,9 +455,12 @@ export default {
         console.log(response);
         if (response.code == 0) {
           _this.addressList = response.data;
+          // 默认选中地址的第一个
           if (!window.localStorage.getItem("taoce-param")) {
-            _this.param.bgaddrId = response.data[0].id;
+            _this.param.bgaddrId = response.data.length > 0 ? response.data[0].id : '';
           }
+        }else{
+          _this.$message.error(response.msg);
         }
       });
     }
@@ -330,7 +468,11 @@ export default {
 };
 </script>
 <style>
-@import "../../style/step.css";
+@import "../../style/step.css"; 
+.moreAddress{
+  height: 80px;
+  overflow: hidden;
+}
 </style>
 
  

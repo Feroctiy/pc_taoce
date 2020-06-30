@@ -69,7 +69,7 @@ export default {
 </script>
 
 <style>
-.el-header {
+/* .el-header {
   color: #333;
   line-height: 60px;
 }
@@ -85,7 +85,7 @@ export default {
   font-size: 18px;
   color: blue;
   font-weight: 400;
-}
+} */
 </style>
 <style>
 #navList {

@@ -4,7 +4,9 @@
     <div class="dl_td">
       <div class="dl_zn">
         <div>
-          <a href="/"> <img src="@/assets/logo/logo1.png" width="161" height="39" alt=""> </a>
+          <a href="/">
+            <img src="@/assets/logo/logo1.png" width="161" height="39" alt="">
+          </a>
           <span class="descs">欢迎登录</span>
         </div>
         <a href="/" class="dl_zn_f">返回首页</a>
@@ -13,12 +15,18 @@
     <!--  -->
     <div class="dl_con">
       <div class="dl_yh">
-        <img src="http://zljweb.com/images/log_bj_y.png" width="457" height="392" alt="" class="dl_bjs" >
+        <img
+          src="http://zljweb.com/images/log_bj_y.png"
+          width="457"
+          height="392"
+          alt=""
+          class="dl_bjs"
+        >
         <div class="yh_k">
           <div class="yh_dl">委托用户登录</div>
           <el-tabs v-model="activeName" @tab-click="handleClick" stretch>
             <el-tab-pane label="用户登录" name="login">
-              <el-form ref="form" :model="form" label-width="80px" class="biao_d_login padding">
+              <el-form ref="form" :model="form" label-width="80px" class="biao_d_login padding" style="padding-bottom:0">
                 <el-form-item label="登录账户">
                   <el-input v-model="form.username" placeholder="请输入登录账户"></el-input>
                 </el-form-item>
@@ -55,8 +63,8 @@
               </el-form>
             </el-tab-pane>
           </el-tabs>
-          <div class="padding-right text-right">
-            还没有账户？<router-link to="/register">
+          <div class="padding-right text-right padding">还没有账户？
+            <router-link to="/register">
               <span class="padding-right">去注册</span>
             </router-link>
           </div>
@@ -77,11 +85,11 @@ export default {
       sum: "",
       timer: null,
       form: {},
-      type:''
+      type: ""
     };
   },
   mounted() {},
-  
+
   created() {
     this.type = this.$route.query.type;
   },
@@ -112,7 +120,7 @@ export default {
               }
             }, 1000);
           }
-        }else{
+        } else {
           this.$message.error(response.msg);
         }
       });
@@ -131,12 +139,11 @@ export default {
         isagree: "1",
         mobile: this.form.mobile
       }).then(response => {
-        console.log(response.data.token);
         if (response.code == 0) {
           window.localStorage.setItem("paoce_token", response.data.token);
           this.$router.push({ path: "/" });
-        }else{
-          this.$message.error(response.message);
+        } else {
+          this.$message.error(response.msg);
         }
       });
     },
@@ -154,19 +161,34 @@ export default {
         isagree: "1",
         password: md5(this.form.password)
       }).then(response => {
-        console.log(response.data.token);
         if (response.code == 0) {
-          window.localStorage.setItem("paoce_token", response.data.token);
-          if(this.type){
+          window.localStorage.setItem("paoce_token", response.data.token); 
+          if (this.type) {
             this.$router.go(-1);
-          }else{
+          } else {
             this.$router.push({ path: "/" });
           }
-          
+        } else {
+          this.$message.error(response.msg);
         }
       });
     },
-    handleClick() {}
+    handleClick() {},
+    // 注册环信
+    webIMregister() {
+      var _this = this;
+      this.$imConn.registerUser({
+        username: Number(Math.random().toString().substr(3,length) + Date.now()).toString(36),
+        password: "123456",
+        nickname: "nickname",
+        appKey: WebIM.config.appkey,
+        apiUrl: WebIM.config.apiURL,
+        success: function(res) { 
+          window.localStorage.setItem("im-userInfo", res); 
+        },
+        error: function(res) { console.log(); }
+      });
+    }
   }
 };
 </script> 

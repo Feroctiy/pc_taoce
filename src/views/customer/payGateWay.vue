@@ -1,12 +1,12 @@
 <template>
-    <div class="main_width" style="padding:0 10px;box-sizing: border-box;overflow: auto;">
-        <div class="user_rt_cont gl2-user_rt_cont wddd_d gl2-wddd_d">
-            <div class="top_title wddd_xx gl2-wddd_xx">
-                <strong>支付宝支付</strong>
-            </div>
-        </div>
-        <div v-html="payGateWay">{{payGateWay}}</div>
+  <div class="main_width customer">
+    <div class="gl2-wddd_d">
+      <div class="top_title">
+        <strong>支付宝支付</strong>
+      </div>
     </div>
+    <div v-html="payGateWay">{{payGateWay}}</div>
+  </div>
 </template>
 <script>
 export default {
@@ -25,4 +25,7 @@ export default {
   }
 };
 </script>
+<style>
+@import "../../style/customer.css";
+</style>
   

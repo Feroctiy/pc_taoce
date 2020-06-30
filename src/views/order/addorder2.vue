@@ -253,7 +253,8 @@ export default {
         bgyt: "社会证明",
         jlxs: "实测数据",
         bgfsxs: "快递速运",
-        isFp:'2'
+        isFp:'2',
+        fpaddrId:''
       },
       formLabelWidth: "120px",
       radio: "1",
@@ -287,10 +288,7 @@ export default {
   created() {
     this.getAddressList();
     this.getInvoiceList();
-    Object.assign(
-      this.param,
-      JSON.parse(window.localStorage.getItem("taoce-param"))
-    );
+    Object.assign(this.param,JSON.parse(window.localStorage.getItem("taoce-param")));
   },
   methods: {
     // 发票列表
@@ -300,6 +298,8 @@ export default {
         _this.listLoading = false;
         if (response.code == 0) {
           _this.invoiceList = response.data;
+        }else{
+          _this.$message.error(response.msg);
         }
       });
     },
@@ -311,6 +311,8 @@ export default {
           _this.addressList = response.data;
           _this.param.bgaddrId = response.data[0].id;
           _this.param.fpaddrId = response.data[0].id;
+        }else{
+          _this.$message.error(response.msg);
         }
       });
     },
@@ -397,6 +399,8 @@ export default {
         if(response.code == 0){
           this.$message('提交成功');
           this.$router.push({ path: "/order" });
+        }else{
+          this.$message.error(response.msg);
         }
       });
     }

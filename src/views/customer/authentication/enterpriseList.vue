@@ -7,23 +7,22 @@
     </div>
     <div class="bg-white padding">
       <el-button type="primary" size="small" class="margin-bottom" @click="addOrUpdate">添加认证+</el-button>
-      <el-table :data="list" style="width: 100%" stripe border="">
+      <el-table :data="list" style="width: 100%" stripe border  v-loading="loading">
         <el-table-column label="序号" type="index" align="center" width="80"></el-table-column>
         <el-table-column prop="creditCode" label="统一社会信用代码" align="center"></el-table-column>
         <el-table-column prop="dwmc" label="企业名称" align="center"></el-table-column>
         <el-table-column prop="legalPerson" label="法定代表人" align="center" width="120"></el-table-column>
         <el-table-column prop="address" label="审核状态" align="center" width="120">
           <template slot-scope="scope">
+            <span v-if="scope.row.status == '0'">待审核</span>
             <span v-if="scope.row.status == '1'">审核通过</span>
+            <span v-if="scope.row.status == '2'">审核不通过</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <el-button
-              type="primary"
-              @click.native.prevent="deleteRow(scope.$index, tableData)"
-              size="mini"
-            >查看</el-button>
+            <el-button type="primary" @click.native.prevent="addOrUpdate(scope.row,'1')" size="mini" >查看</el-button>
+            <el-button type="primary" v-if="scope.row.status != '1'" @click.native.prevent="addOrUpdate(scope.row,'2')" size="mini" >编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -34,20 +33,26 @@
   </div>
 </template>
 <script>
-export default {
-  data() {
+export default { 
+  data() { 
     return {
+      hasFmt:false,
       list: [],
-      status: false
+      status: false,
+      loading:true
     };
   },
   created() {
     this.handleList();
   },
   methods: {
-    // 新增/修改地址
-    addOrUpdate() {
-      this.$router.push({ path: "/enterprise" });
+    // 新增/修改
+    addOrUpdate(item,type) {
+      console.log(item,type);
+      
+      var item = item ? item : "";
+      var type = type ? type : "";
+      this.$router.push({ path: "/enterprise",query: { item: item,type:type } });
     },
     // 删除 /api/user/deleteUserConsigneeAddress
     deleteRow(id) {
@@ -80,6 +85,7 @@ export default {
       var _this = this;
       this.$fetch("/api/user/userAuthenticationList", { type: "2" }).then(
         response => {
+          _this.loading = false;
           if (response.code == 0) {
             _this.list = response.data;
           } else {

@@ -19,8 +19,8 @@
 }
 .dl_yh .dl_bjs { margin: 76px 0 0 54px; }
 .yh_k {
-    width: 400px;
-    height: 386px;
+    width: 450px;
+    /* height: 386px; */
     background: #fff;
     float: right;
     margin-top: 94px;
@@ -42,7 +42,8 @@
     margin: auto; 
   }
   .biao_d_login {
-    width: 330px;
+    width: 90%;
+    margin: auto;
   }
   
   .dl_con {

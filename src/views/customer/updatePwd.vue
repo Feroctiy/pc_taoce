@@ -1,9 +1,9 @@
 <template>
-    <div class="main_width customer" style="padding-left:10px;box-sizing: border-box;overflow: auto;">
-        <div class="user_rt_cont gl2-user_rt_cont wddd_d gl2-wddd_d">
-            <div class="top_title wddd_xx gl2-wddd_xx">
-                <strong>修改密码</strong>
-            </div>
+    <div class="main_width customer">
+        <div class="gl2-wddd_d">
+          <div class="top_title">
+            <strong>修改密码</strong>
+          </div>
         </div>
         <div class="bg-white padding">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm" style="width:400px;">

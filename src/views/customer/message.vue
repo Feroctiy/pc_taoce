@@ -1,91 +1,62 @@
 <template>
-    <div class="main_width" style="padding-left:10px;box-sizing: border-box;overflow: auto;">
-        <div class="user_rt_cont gl2-user_rt_cont wddd_d gl2-wddd_d">
-        <div class="top_title wddd_xx gl2-wddd_xx">
-            <strong>我的消息</strong>
-        </div>
-        </div>
-        <div class="bg-white padding"> 
-        </div>
+  <div class="main_width customer">
+    <div class="gl2-wddd_d">
+      <div class="top_title">
+        <strong>我的消息</strong>
+      </div> 
     </div>
+    <div class="bg-white padding" v-loading="loading">
+      <el-collapse accordion>
+        <el-collapse-item v-for="(item, index)  in list" :key="index" :name="index">
+          <template slot="title"> 
+            <div class="flex justify-between text-df" style="width: 100%;">
+              <div>2020-02-16 一致性 Consistency</div>
+              <div>消息类型</div> 
+            </div>
+          </template>
+          <div>与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；</div>
+        </el-collapse-item> 
+      </el-collapse>
+    </div>
+    <div class="block" style="text-align:right;margin-top:30px;margin-bottom:30px;">
+      <el-pagination hide-on-single-page  :page-size="pageSize" background layout="prev, pager, next" :total="total" @current-change="handleCurrentChange" ></el-pagination>
+    </div>
+  </div>
 </template>
 <script>
-import addOrUpdateInvoice from "../template/add-or-update-invoice";
 export default {
-  components: { addOrUpdateInvoice },
   data() {
-    return {
-      list: [],
-      status: false,
-      listLoading:true
+    return { 
+      list:[], 
+      loading:true,
+      currentPage: 1,
+      pageSize: 20,
+      total:0
     };
   },
   created() {
-	  this.handleList();
+    this.getList();
   },
   methods: {
-    // 新增/修改地址
-    addOrUpdate(item) {
-      this.status = true;
-      this.$nextTick(() => { this.$refs.invoic.init(item); });
-    },
-    // 删除 /api/user/deleteUserConsigneeAddress
-    deleteRow(id) {
+    getList() {
       var _this = this;
-      this.$confirm("此操作将永久删除该发票信息, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          this.$fetch("/api/user/deleteUserInvoiceInfo", { id: id}).then(response => { 
-            if (response.code == 0) {
-              _this.handleList();
-            }
-          });
-        })
-        .catch(() => { });
-    },
-    handDefault(id){
-      var _this = this;
-      this.$confirm("是否将该发票设为默认?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          this.$fetch("/api/user/defaultUserInvoiceInfo", { id: id}).then(response => { 
-            if (response.code == 0) {
-              _this.handleList();
-            }
-          });
-        })
-        .catch(() => { });
-    },
-    handleList() {
-      var _this = this;
-      this.$fetch("/api/user/userInvoiceInfoList").then(response => { 
-        _this.listLoading = false;
+      this.$fetch("/api/news/list", { limit: _this.pageSize, page: _this.currentPage }).then(response => {
+        _this.loading = false;
         if (response.code == 0) {
-          _this.list = response.data;
+          _this.list = response.data.records;
+          _this.total = response.data.total;
+        } else {
+          _this.$message.error(response.msg);
         }
       });
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val;
+      this.getList();
     }
   }
 };
 </script>
-
 <style>
-.el-header {
-  color: #333;
-  line-height: 60px;
-}
-
-.el-aside {
-  color: #333;
-}
-
-.el-menu {
-  height: 100%;
-}
+@import "../../style/customer.css";
 </style>

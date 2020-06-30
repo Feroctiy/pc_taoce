@@ -1,13 +1,31 @@
 <template>
 	<div id="app">
-		<router-view/>
-	</div>
+    <router-view v-if="isRouterAlive"></router-view>
+  </div>
 </template>
 
 <script>
 export default {
-  name: "App"
-};
+  name: 'App',
+  provide () {
+    return {
+      reload: this.reload
+    }
+  },
+  data () {
+    return {
+      isRouterAlive: true
+    }
+  },
+  methods: {
+    reload () {
+      this.isRouterAlive = false
+      this.$nextTick(function () {
+        this.isRouterAlive = true
+      })
+    }
+  }
+}
 </script>
 
 <style>
@@ -46,17 +64,7 @@ body {
   font-weight: 400;
   position: relative;
 }
-/* .title::after {
-  width: 0;
-  height: 0;
-  border-left: 50px solid transparent;
-  border-right: 50px solid transparent;
-  border-top: 100px solid red;
-  position: absolute;
-  content: "";
-  top: 30px;
-  left: 0px;
-} */
+ 
 
 
 .cu-bar {

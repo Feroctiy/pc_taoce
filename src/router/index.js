@@ -33,7 +33,18 @@ export default new Router({
 					name: 'News',
 					component: () => import('@/views/news/index')
 				},
-				// 检测只是
+				{
+					path: '/news-detail',
+					name: 'NewsDetail',
+					component: () => import('@/views/news/news-detail')
+				},
+				{
+					path: '/ask-detail',
+					name: 'AskDetail',
+					component: () => import('@/views/news/ask-detail')
+				},
+				
+				// 检测知识
 				{
 					path: '/test-knowledge',
 					name: 'test-knowledge',
@@ -44,6 +55,12 @@ export default new Router({
 					name: 'test-knowledge-detail',
 					component: () => import('@/views/index/test-knowledge-detail')
 				},
+				{
+					path: '/answer',
+					name: 'Answer',
+					component: () => import('@/views/index/answer')
+				},
+				
 				//机构展示
 				{
 					path: '/institution',
@@ -73,6 +90,25 @@ export default new Router({
 					name: 'Server',
 					component: () => import('@/views/product/server')
 				},
+				// 查询
+				// 报告查询
+				{
+					path: '/reportFind',
+					name: 'ReportFind',
+					component: () => import('@/views/index/reportFind')
+				},
+				// 证书查询  
+				{
+					path: '/certificateFind',
+					name: 'CertificateFind',
+					component: () => import('@/views/index/certificateFind')
+				},
+				// 标准查询
+				{
+					path: '/standardFind',
+					name: 'StandardFind',
+					component: () => import('@/views/index/standardFind')
+				}
 				
 			]
 		},
@@ -81,6 +117,11 @@ export default new Router({
 			name: 'user',
 			component: user,
 			children:[
+				{
+					path: '/agreement',
+					name: 'Agreement',
+					component: () => import('@/views/product/agreement')
+				},
 				{
 					path: '/step',
 					name: 'Step',
@@ -105,6 +146,11 @@ export default new Router({
 					path: '/addOrder2',
 					name: 'Order',
 					component: () => import('@/views/order/addOrder2')
+				},
+				{
+					path: '/shopJoinApply',
+					name: 'ShopJoinApply',
+					component: () => import('@/views/shop/shopJoinApply')
 				}
 			]
 		},
@@ -130,12 +176,12 @@ export default new Router({
 		// 	name: 'GoodDetail',
 		// 	component: () => import('@/views/good1/detail')
 		// },
-		// {
-		// 	path: '/cart',
-		// 	name: 'Cart',
-		// 	component: () => import('@/views/good1/cart')
-		// },
-		// 我的
+		{
+			path: '/chat',
+			name: 'Chat',
+			component: () => import('@/views/index/Chat')
+		},
+		// 个人中心
 		{
 			path: '/customer',
 			name: 'Customer',
@@ -167,11 +213,31 @@ export default new Router({
 					name: 'PayGateWay',
 					component: () => import('@/views/customer/payGateWay')
 				},
+				// 我的钱包
 				{
 					path: '/wallet',
 					name: 'Wallet',
 					component: () => import('@/views/customer/wallet')
 				},
+				// 充值明细
+				{
+					path: '/rechargeDetail',
+					name: 'RechargeDetail',
+					component: () => import('@/views/customer/rechargeDetail')
+				},
+				// 充值
+				{
+					path: '/recharge',
+					name: 'Recharge',
+					component: () => import('@/views/customer/recharge')
+				},
+				// 提现
+				{
+					path: '/widthdraw',
+					name: 'Widthdraw',
+					component: () => import('@/views/customer/widthdraw')
+				},
+				
 				{
 					path: '/center',
 					component: () => import('@/views/customer/center'),
@@ -187,13 +253,14 @@ export default new Router({
 					component: () => import('@/views/customer/detail'),
 					name: 'Detail'
 				},
+				// 地址库
 				{
 					path: '/address',
 					component: () => import('@/views/customer/address'),
 					name: 'Address'
 				},
 				
-				
+				// 发票薄
 				{
 					path: '/invoice',
 					name: 'Invoice',
@@ -262,13 +329,7 @@ export default new Router({
 				}
 				
 			]
-		},
-		// {
-		// 	path: '/detail',
-		// 	name: 'Detail',
-		// 	component: () => import('@/views/customer/detail')
-		// }
-		
+		} 
 	],
 	scrollBehavior: () => ({
 		y: 0

@@ -53,7 +53,7 @@
             </li>
             <li class="xiangq_ju">
               <span class="shenqrxq_bt">生产日期</span>
-              <el-date-picker v-model="param.ypscrq" type="date" placeholder="选择日期"></el-date-picker>
+              <el-date-picker v-model="param.ypscrq" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"></el-date-picker>
             </li>
             <li class="xiangq_ju">
               <span class="shenqrxq_bt"> 样品退还方式 <span class="weit_xhx">*</span> </span>
@@ -72,7 +72,7 @@
       <!-- 服务需求 -->
       <div class="server-title">服务需求</div>
       <div>
-        <el-checkbox-group v-model="param.fwxq">
+        <el-checkbox-group v-model="param.fwxq1">
           <el-checkbox-button v-for="item in serviceDemandList" :label="item.id" :key="item.id" >{{item.mc}}</el-checkbox-button>
         </el-checkbox-group>
       </div>
@@ -124,9 +124,13 @@
         <el-input placeholder="请详细描述您的检测需求，方便客服根据您的需求进行确认，最长可输入200字，如备注内容较多可附件形式上传" class="container_input required" maxlength="200" v-model="param.xygtnr"></el-input>
       </div>
       <div class="shqrm_c">
-        <li class="xiangq_ju gl2-xiangq_ju-fu" style="width: 95%;">
+        <li class="xiangq_ju gl2-xiangq_ju-fu" style="width: 90%;">
           <span class="shenqrxq_bt gl2-shenq-fujian">附件</span>
-          <el-upload style="display: inline;" class="upload-demo" multiple :action="uploadUrl" :show-file-list="false" :on-success="handleAvatarSuccess" :file-list="fileList">
+          <el-upload style="display: inline;" class="upload-demo" multiple 
+          :limit="1" :action="uploadUrl" :show-file-list="true"  
+          :on-success="handleAvatarSuccess" :file-list="fileList" 
+          :on-preview="handlePreview" :before-upload="beforeAvatarUpload"
+          :on-exceed="handleExceed" :before-remove="beforeRemove" :on-remove="handleRemove">
             <el-button size="small" type="primary">点击上传</el-button>
           </el-upload>
         </li>
@@ -151,7 +155,7 @@
     <!-- 检测标准 -->
     <test v-if="testStatus" ref="test"/>
     <!-- 店铺产品分类 -->
-    <shop-classify v-if="classStatus" ref="shopclassify" @getClass="getClass($event)"/>
+    <shop-classify v-if="classStatus" ref="shopclassify" @getClass="getClass($event)" :shopid="param.jgid"/>
   </div>
 </template>
 
@@ -180,11 +184,12 @@ export default {
         ypsl:"", // 样品数量
         ypscrq:"", // 生产日期
         ypsbmc:"", // 样品商标
-
+        isJj:"2", //是否加急 1是 2否
         cateOne:"", // 一级分类
         cateThree:"", // 三级分类
         cateTwo:"", // 二级分类
 
+        fwxq1:[],
         fwxq:[], // 服务需求
         sqlx: "1", // 默认新申请
         ypxh:"1", // 默认单型号
@@ -216,20 +221,61 @@ export default {
     };
   },
   created() {
-    
+    if (!window.localStorage.getItem("paoce_token")) {
+      this.$router.push({ path: "/login" });
+      return;
+    }
     this.getServiceDemand();
     this.getAgencyList();
+    if(window.localStorage.getItem("taoce-param")){
+      this.param = JSON.parse(window.localStorage.getItem("taoce-param"));
+      this.param.isJj == '2' ? this.checked == false : this.checked == true;
+      this.fileList = [{ name: "附件", url: this.param.fjxx }];
+      this.multipleSelection = this.param.fwItemIds.split();
+      // this.$refs.multipleTable.toggleRowSelection(this.multipleSelection);
+    }
+    console.log(this.multipleSelection);
+    
+    
   
   },
   mounted() {},
-  methods: {
+  methods: { 
     handleAvatarSuccess(res, file){ 
+      this.fileList = []
       this.param.fjxx = res.data;
-      this.fileList.push({
-        name: file.name,
-        url: res.data
-      })
+      this.fileList.push({ name: file.name, url: res.data })
     },
+    beforeAvatarUpload(file) { 
+      const isLt10M = file.size / 1024 / 1024 < 10; 
+      if (!isLt10M) {
+        this.$message.error("上传头像图片大小不能超过 10MB!");
+      }
+      return isLt10M;
+    },
+    handlePreview(file){
+      window.open(file.url)
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning("只能上传一个文件，请删除之后重新上传");
+    },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
+    handleRemove(file, fileList) {
+      this.fileList = []
+      this.param.fjxx = '';
+    },
+
+
+
+
+
+
+
+
+
+
     // 获取分类
     getClass(data){
       this.param.cateOne	= data.cateOne ;
@@ -262,6 +308,7 @@ export default {
       var _this = this;
       this.param.fwItemIds = "";
       this.multipleSelection = val;
+
       this.multipleSelection.forEach(function(v, i) {
         _this.param.fwItemIds += v.id + ",";
       });
@@ -272,7 +319,6 @@ export default {
       this.$fetch("/api/serviceDemand/listAll", {}).then(response => {
         if (response.code == 0) {
           this.serviceDemandList = response.data;
-          console.log("服务需求：", this.serviceDemandList);
         }
       });
     },
@@ -284,10 +330,13 @@ export default {
         console.log(response);
         if (response.code == 0) {
           this.agencyList = response.data;
-          this.param.jgid = response.data[0].jid;
-          
-          this.getLibList(response.data[0].jid);
-           
+          if(window.localStorage.getItem("taoce-param")){ 
+            this.param.jgid = JSON.parse(window.localStorage.getItem("taoce-param")).jgid;
+            this.getLibList(this.param.jgid);
+          }else{
+            this.param.jgid = response.data[0].jid;
+            this.getLibList(response.data[0].jid);
+          } 
         }
       });
     },
@@ -311,24 +360,34 @@ export default {
       });
     },
 
-    next() {
-      if (isEmpty(this.param.ypmc)) {
-        this.$message.error("请输入样品名称");
+    next() { 
+      // if (isEmpty(this.param.ypmc)) {
+      //   this.$message.error("请输入样品名称");
+      //   return;
+      // }
+      // if (isEmpty(this.param.ypsl)) {
+      //   this.$message.error("请输入样品数量");
+      //   return;
+      // }
+      console.log(this.param.fwxq1.length);
+      if (this.param.fwxq1.length < 1) {
+        this.$message.error("请选择服务需求");
         return;
-      }
-      if (isEmpty(this.param.ypsl)) {
-        this.$message.error("请输入样品数量");
-        return;
-      }
+      } 
       if (isEmpty(this.param.ypxhsl)) {
         this.$message.error("请输入型号数量");
         return;
       }
-      
-      console.log(this.param);
+      if (isEmpty(this.param.fwItemIds)) {
+        this.$message.error("请选择检测标准");
+        return;
+      }
+      this.param.fwxq = this.param.fwxq1.toString(); 
       this.param.agentId = this.$route.query.shopid
       this.param.fwItemIds = this.param.fwItemIds.slice( 0, this.param.fwItemIds.length - 1 );
       window.localStorage.setItem("taoce-param", JSON.stringify(this.param));
+      console.log(this.param);
+   
       this.$router.push({ path: "/addorder2" });
     },
     // 新增检测标准
@@ -359,7 +418,7 @@ export default {
   padding-bottom: 4px;
 }
 
-.container_input {
+.addorderBox .container_input {
   width: 62%;
   height: 38px;
   border: 0;

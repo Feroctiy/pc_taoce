@@ -11,20 +11,35 @@
             </div>
         </div>
         <section class="zhuc_zx" style="min-height:500px">
-            <el-form ref="form" :model="form" label-width="80px" class="biao_d">
-                <el-form-item label="登录账户">
+            <el-form ref="form" :model="form" :rules="rules" label-width="80px" class="biao_d">
+                <el-form-item label="登录账户" prop="username">
                     <el-input v-model="form.username" placeholder="请输入登录账户"></el-input>
                 </el-form-item>
-                <el-form-item label="手机号">
-                    <el-input v-model="form.mobile" placeholder="请输入手机号"></el-input>
+                <el-form-item label="手机号" prop="mobile">
+                    <el-input v-model="form.mobile" placeholder="请输入手机号" maxlength="11" type="number"></el-input>
                 </el-form-item>
-                <el-form-item label="验证码">
-                    <el-input v-model="form.code" placeholder="请输入验证码" style="width: 170px;"></el-input>
+                <el-form-item label="验证码" prop="code">
+                    <el-input v-model="form.code" placeholder="请输入验证码" style="width: 170px;" maxlength="6"></el-input>
                     <el-button type="primary" style="display:inline-block;float: right;" @click="getCode" v-show="show" >获取验证码</el-button>
                     <el-button type="primary" style="display:inline-block;float: right;" v-show="!show" >{{sum}}s重新发送</el-button>
                 </el-form-item>
+                <el-form-item label="密码" prop="userpass">
+                    <el-input v-model="form.userpass" placeholder="请输入密码" type="password"></el-input>
+                </el-form-item>
+                <el-form-item label="" prop="isagree" style="width:1000px;"> 
+                  <el-checkbox label="阅读并同意" v-model="form.isagree"></el-checkbox>
+                  <router-link to="/agreement" style="margin-right:3px;color:#409EFF">
+                    《淘测用户注册协议》
+                  </router-link>
+                  <router-link to="/agreement" style="margin-right:3px;color:#409EFF">
+                    《隐私政策》
+                  </router-link>
+                  <router-link to="/agreement" style="margin-right:3px;color:#409EFF">
+                    《平台法律声明》
+                  </router-link>  
+                </el-form-item> 
                 <el-form-item>
-                    <el-button type="danger" @click="onSubmit" style="width:100%;">注册</el-button>
+                    <el-button type="primary" @click="onSubmit" style="width:100%;">注册</el-button>
                 </el-form-item>
             </el-form>
         </section>
@@ -32,14 +47,50 @@
 </template>
 
 <script>
+import { validateMobile,isValidUserName } from '@/utils/validate'
 import { isEmpty } from "@/utils";
+import md5 from 'js-md5';
 export default {
+  
   data() {
+    var mobileValidator = (rule, value, callback) => {
+      if (!validateMobile(value)) {
+        callback(new Error("手机号格式错误"));
+      } else {
+        callback();
+      }
+    };
+    var userNameValidator = (rule, value, callback) => {
+      if (!isValidUserName(value)) {
+        callback(new Error("登录帐号仅支持字母或数字，禁止使用全角字符和特殊符号"));
+      } else {
+        callback();
+      }
+    }; 
     return {
       show: true,
       sum: "",
       timer: null,
-      form: {}
+      form: {},
+      rules: {
+          username: [
+            { required: true, message: '请输入登录账户', trigger: 'blur' },
+            { validator: userNameValidator, trigger: "blur" }
+          ],
+          mobile:[
+            { required: true, message: '请输入手机号', trigger: 'blur' },
+            { validator: mobileValidator, trigger: "blur" }
+          ],
+          code: [
+            { required: true, message: '请输入验证码', trigger: 'blur' }
+          ],
+          userpass: [
+            { required: true, message: '请输入密码', trigger: 'blur' }
+          ],
+          isagree:[
+            { required: true, message: '请选择是否统一', trigger: 'change' }
+          ]
+        }
     };
   },
   mounted() {},
@@ -71,32 +122,36 @@ export default {
             }, 1000);
           }
         }else{
-          this.$message.info(response.msg);
+          _this.$message.error(response.msg);
         }
       });
     },
     onSubmit() {
-      if (isEmpty(this.form.username)) {
-        this.$message.error("请输入登录账户");
-        return;
-      }
-      if (isEmpty(this.form.mobile)) {
-        this.$message.error("请输入手机号");
-        return;
-      }
-      if (isEmpty(this.form.code)) {
-        this.$message.error("请输入验证码");
-        return;
-      }
-      this.$post("/api/user/regByCode", {
-        code: this.form.code,
-        isagree: "string",
-        mobile: this.form.mobile,
-        username: this.form.username
-      }).then(response => {
-        console.log(response);
-        this.goodsList = response.data.records;
-      });
+      console.log(this.form);
+      var _this = this;
+      this.$refs["form"].validate(valid => {
+        if (valid){
+            this.$post("/api/user/regByCode", {
+              code: this.form.code,
+              isagree: this.form.isagree == true ? '1':'2',
+              mobile: this.form.mobile,
+              username: this.form.username,
+              userpass:md5(this.form.userpass)
+            }).then(response => {
+              console.log(response);
+              if(response.code == 0){
+                _this.$message({ message: '注册成功', type: 'success', duration: 1500, onClose: () => {  
+                    _this.$router.push({ path: "/login"});
+                }})
+              }else{
+                _this.$message.error(response.msg);
+              }
+               
+            });
+        }
+      })
+    
+      
 
       //         {
       //   "code": "string",

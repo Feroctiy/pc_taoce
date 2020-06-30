@@ -26,31 +26,37 @@
               <el-col :span="6">
                 <div class="st">新手指南</div>
                 <ul>
-                  <li>买家入门</li>
-                  <li>卖家入门</li>
-                  <li>帮助中心</li>
+                  <li>
+                    <router-link :to="{path:'/agreement',query:{id:'2'}}" target="_blank">买家入门</router-link>
+                  </li>
+                  <li>
+                    <router-link :to="{path:'/agreement',query:{id:'3'}}" target="_blank">卖家入门</router-link>
+                  </li>
+                  <li>
+                    <router-link :to="{path:'/agreement',query:{id:'4'}}" target="_blank">帮助中心</router-link>
+                  </li>
                 </ul>
               </el-col>
               <el-col :span="6">
                 <div class="st">买家服务</div>
                 <ul>
-                  <li>支付流程</li>
-                  <li>投诉举报</li>
+                  <li><router-link :to="{path:'/agreement',query:{id:'5'}}" target="_blank">支付流程</router-link></li>
+                  <li><router-link :to="{path:'/agreement',query:{id:'9'}}" target="_blank">投诉举报</router-link></li>
                 </ul>
               </el-col>
               <el-col :span="6">
                 <div class="st">卖家服务</div>
                 <ul>
-                  <li>我要开店</li>
-                  <li>投诉举报</li>
+                  <li><router-link :to="{path:'/agreement',query:{id:'9'}}" target="_blank">我要开店</router-link></li>
+                  <li><router-link :to="{path:'/agreement',query:{id:'9'}}" target="_blank">投诉举报</router-link></li>
                 </ul>
               </el-col>
               <el-col :span="6">
                 <div class="st">平台服务</div>
                 <ul>
-                  <li>法律声明</li>
-                  <li>隐私政策</li>
-                  <li>赔付退款</li>
+                  <li><router-link :to="{path:'/agreement',query:{id:'6'}}" target="_blank">法律声明</router-link></li>
+                  <li><router-link :to="{path:'/agreement',query:{id:'7'}}" target="_blank">隐私政策</router-link></li>
+                  <li><router-link :to="{path:'/agreement',query:{id:'8'}}" target="_blank">赔付退款</router-link></li>
                 </ul>
               </el-col>
             </el-row>
